@@ -79,20 +79,25 @@ Strip.prototype.getNoteAtPosition = function (time, number) {
 }
 
 // VIEW
-var RollView = function (viewW, viewH, context) {
-  this.th = viewH;
-  this.tw = viewW;
-  this.ctx = context;
+var RollView = function (el) {
+  this.el = el;
+  this.tw = el.width;
+  this.th = el.height;
+  this.ctx = el.getContext("2d");
+
   this.strip = new Strip();
-  this.noteHeight = Math.round(viewH / (5 * 12));
-  this.noteWidth = Math.round(viewW / (4 * 32));
+  this.noteHeight = Math.round(this.th / (5 * 12));
+  this.noteWidth = Math.round(this.tw / (4 * 32));
+  this.boundHandler = this.eventHandler.bind(this);
+
+  el.addEventListener("mousedown", this.boundHandler);
 
   // TODO THIS IS TEST CODE
   this.strip.addNote (0, CROMA, 36);
   this.strip.addNote (0.5, CROMA, 36);
   this.strip.addNote (1, MINIMA, 38);
   this.render ();
-}
+};
 
 RollView.prototype.render = function () {
 
@@ -118,10 +123,15 @@ RollView.prototype.render = function () {
   }
 };
 
+RollView.prototype.eventHandler = function (e) {
+  var moment = e.x / this.noteWidth;
+  var note = e.y / this.noteHeight;
+  console.log ("note number", note, "at moment", moment);
+};
+
 
 // INIT
 var sheet = document.querySelector("#sheet");
-var ctx = sheet.getContext("2d");
 
-var rollView = new RollView (sheet.width, sheet.height, ctx);
+var rollView = new RollView (sheet);
 
