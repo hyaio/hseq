@@ -2,13 +2,67 @@ var SEMIBREVE = 4, // (bar)
     MINIMA = 2, // (half bar)
     SEMIMINIMA = 1, // (quarter bar)
     CROMA = 0.5, // (1/8 bar)
-    SEMICROMA = 0.25 // (1/16 bar)
+    SEMICROMA = 0.25; // (1/16 bar)
 
 var idCounter = 0,
   uniqueId = function(prefix) {
     var id = ++idCounter + '';
     return prefix ? prefix + id : id;
   };
+
+var getEventPosition = function (e, obj) {
+  var stylePaddingLeft = parseInt(document.defaultView.getComputedStyle(obj, null).paddingLeft, 10) || 0;
+  var stylePaddingTop = parseInt(document.defaultView.getComputedStyle(obj, null).paddingTop, 10) || 0;
+  var styleBorderLeft = parseInt(document.defaultView.getComputedStyle(obj, null).borderLeftWidth, 10) || 0;
+  var styleBorderTop = parseInt(document.defaultView.getComputedStyle(obj, null).borderTopWidth, 10) || 0;
+  var html = document.body.parentNode;
+  var htmlTop = html.offsetTop;
+  var htmlLeft = html.offsetLeft;
+
+
+  var element = obj,
+      offsetX = 0,
+      offsetY = 0,
+      mx, my;
+
+  // Compute the total offset
+  if (typeof element.offsetParent !== 'undefined') {
+      do {
+          offsetX += element.offsetLeft;
+          offsetY += element.offsetTop;
+      } while ((element = element.offsetParent));
+  }
+
+  // Add padding and border style widths to offset
+  // Also add the <html> offsets in case there's a position:fixed bar
+  offsetX += stylePaddingLeft + styleBorderLeft + htmlLeft;
+  offsetY += stylePaddingTop + styleBorderTop + htmlTop;
+
+  mx = e.pageX - offsetX;
+  my = e.pageY - offsetY;
+
+  // this returns in element's css value, without borders
+  var cssWidth = parseInt(document.defaultView.getComputedStyle(obj, null).getPropertyValue("width"), 10) || 0;
+  var cssHeight = parseInt(document.defaultView.getComputedStyle(obj, null).getPropertyValue("height"), 10) || 0;
+
+  //var cssWidth  = obj.offsetWidth;
+  //var cssHeight = obj.offsetHeight;
+
+  var attrWidth = obj.getAttribute("width");
+  var attrHeight = obj.getAttribute("height");
+  var widthScale = attrWidth / cssWidth;
+  var heightScale = attrHeight / cssHeight;
+  //console.log ('*** SCALE', widthScale, heightScale);
+
+  mx *= widthScale;
+  my *= heightScale;
+
+  // We return a simple javascript object (a hash) with x and y defined
+  return {
+      x: mx,
+      y: my
+  };
+};
 
 // MODEL DEFINITION
 var Note = function (start, duration, number) {
@@ -48,10 +102,10 @@ Strip.prototype.addNote = function (start, duration, number) {
 Strip.prototype.removeNote = function (id) {
   delete this.notesHash[id];
   this.syncSort();
-} 
+}; 
 Strip.prototype.resizeNote = function (id, duration) {
   notesHash[id].setDuration(duration);
-}
+};
 Strip.prototype.moveNote = function (id, start, number) {
   if (start !== null) {
     notesHash[id].setStart(start);
@@ -60,23 +114,23 @@ Strip.prototype.moveNote = function (id, start, number) {
   if (number !== null) {
     notesHash[id].setNumber(number);
   }
-}
+};
 Strip.prototype.getOrdered = function () {
-  return this.notesArray;  
-}
+  return this.notesArray;
+};
 Strip.prototype.getHash = function () {
   return this.notesHash;
-}
+};
 Strip.prototype.getNoteAtPosition = function (time, number) {
-  for (var note in this.notesHash) {
+  for (var key in this.notesHash) {
+    var note = this.notesHash[key];
     if (note.number === number) {
       if (note.start < time && (note.start + note.duration) > time) {
         return note;
       }
     }
   }
-
-}
+};
 
 // VIEW
 var RollView = function (el) {
@@ -115,18 +169,21 @@ RollView.prototype.render = function () {
     
     // add linear gradient TODO
     var grd = this.ctx.createLinearGradient(0, 0, width, height);
-    grd.addColorStop(0, '#FF8500');   
+    grd.addColorStop(0, '#FF8500');
     grd.addColorStop(1, '#FFC500');
     this.ctx.fillStyle = grd;
     
-    this.ctx.fillRect(left, top, width, height); 
+    this.ctx.fillRect(left, top, width, height);
   }
 };
 
 RollView.prototype.eventHandler = function (e) {
-  var moment = e.x / this.noteWidth;
-  var note = e.y / this.noteHeight;
+  var pos = getEventPosition (e, this.el);
+  var moment = e.offsetX / this.noteWidth;
+  var note = Math.ceil((this.th - e.offsetY) / this.noteHeight);
   console.log ("note number", note, "at moment", moment);
+  var selNotes = this.strip.getNoteAtPosition (moment, note);
+  console.log (selNotes);
 };
 
 
