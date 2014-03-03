@@ -100,6 +100,10 @@ Strip.prototype.addNote = function (start, duration, number) {
   return id;
 };
 
+Strip.prototype.getNote = function (id) {
+  return this.notesHash[id];
+};
+
 Strip.prototype.removeNote = function (id) {
   delete this.notesHash[id];
   this.syncSort();
@@ -140,6 +144,7 @@ var RollView = function (el) {
   this.th = el.height;
   this.ctx = el.getContext("2d");
   this.down = false;
+  this.step = 0;
 
   this.strip = new Strip();
   this.noteHeight = Math.round(this.th / (5 * 12));
@@ -157,6 +162,10 @@ var RollView = function (el) {
   this.strip.addNote (0.5, CROMA, 36);
   this.strip.addNote (1, MINIMA, 38);
   this.render ();
+};
+
+RollView.prototype.setStep = function (step) {
+  this.step = step;
 };
 
 RollView.prototype.render = function () {
@@ -232,9 +241,21 @@ RollView.prototype.moveHandler = function (e) {
 
   if (this.down && this.selected) {
     console.log ("bring the action!");
+
     var pos = this.getPosFromEvent (e);
-    this.strip.moveNote (this.selected, pos.moment, pos.note);
-    dirty = true;
+    if (this.step) {
+      var oldNote = this.strip.getNote (this.selected);
+      if (Math.abs(pos.moment - oldNote.start) > this.step) {
+        this.strip.moveNote (this.selected, pos.moment, pos.note);
+        dirty = true;  
+      }
+    }
+    else {
+      this.strip.moveNote (this.selected, pos.moment, pos.note);
+      dirty = true;
+    }
+
+    
   }
 
   if (dirty) {
