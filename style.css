@@ -14,7 +14,7 @@ body {
   width:500px;
   height:300px;
   overflow: scroll;
-  background-color: rgba(100,100,100,0.6);
+  background-color: rgb(60,60,60);
 }
 #sheet {
   margin:6px;

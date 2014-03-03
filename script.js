@@ -65,10 +65,11 @@ var getEventPosition = function (e, obj) {
 };
 
 // MODEL DEFINITION
-var Note = function (start, duration, number) {
+var Note = function (start, duration, number, id) {
   this.start = start;
   this.duration = duration;
   this.number = number;
+  this.id = id;
 }
 Note.prototype.setStart = function (newStart) {
   this.start = newStart;
@@ -94,7 +95,7 @@ Strip.prototype.syncSort = function () {
 
 Strip.prototype.addNote = function (start, duration, number) {
   var id = uniqueId ();
-  this.notesHash[id] = new Note (start, duration, number);
+  this.notesHash[id] = new Note (start, duration, number, id);
   this.syncSort();
   return id;
 };
@@ -104,15 +105,15 @@ Strip.prototype.removeNote = function (id) {
   this.syncSort();
 }; 
 Strip.prototype.resizeNote = function (id, duration) {
-  notesHash[id].setDuration(duration);
+  this.notesHash[id].setDuration(duration);
 };
 Strip.prototype.moveNote = function (id, start, number) {
   if (start !== null) {
-    notesHash[id].setStart(start);
+    this.notesHash[id].setStart(start);
     this.syncSort();
   }
   if (number !== null) {
-    notesHash[id].setNumber(number);
+    this.notesHash[id].setNumber(number);
   }
 };
 Strip.prototype.getOrdered = function () {
@@ -138,13 +139,18 @@ var RollView = function (el) {
   this.tw = el.width;
   this.th = el.height;
   this.ctx = el.getContext("2d");
+  this.down = false;
 
   this.strip = new Strip();
   this.noteHeight = Math.round(this.th / (5 * 12));
   this.noteWidth = Math.round(this.tw / (4 * 32));
-  this.boundHandler = this.eventHandler.bind(this);
+  this.boundDownHandler = this.downHandler.bind(this);
+  this.boundMoveHandler = this.moveHandler.bind(this);
+  this.boundUpHandler = this.upHandler.bind(this);
 
-  el.addEventListener("mousedown", this.boundHandler);
+  el.addEventListener("mousedown", this.boundDownHandler);
+  el.addEventListener("mousemove", this.boundMoveHandler);
+  el.addEventListener("mouseup", this.boundUpHandler);
 
   // TODO THIS IS TEST CODE
   this.strip.addNote (0, CROMA, 36);
@@ -156,8 +162,8 @@ var RollView = function (el) {
 RollView.prototype.render = function () {
 
   var notes = this.strip.getHash();
-
-  //ctx.fillStyle = "orange";
+  this.ctx.fillStyle = 'rgb(60,60,60)';
+  this.ctx.fillRect(0, 0, this.tw, this.th);
   
   for (var n in notes) {
     
@@ -168,22 +174,87 @@ RollView.prototype.render = function () {
     var height = this.noteHeight - 1;
     
     // add linear gradient TODO
-    var grd = this.ctx.createLinearGradient(0, 0, width, height);
-    grd.addColorStop(0, '#FF8500');
-    grd.addColorStop(1, '#FFC500');
-    this.ctx.fillStyle = grd;
+    if (this.selected && note.id === this.selected) {
+      this.ctx.fillStyle = 'OrangeRed';
+    }
+    else {
+      this.ctx.fillStyle = '#FFC500'; 
+    }
     
     this.ctx.fillRect(left, top, width, height);
   }
 };
 
-RollView.prototype.eventHandler = function (e) {
+RollView.prototype.getPosFromEvent = function (e) {
   var pos = getEventPosition (e, this.el);
   var moment = e.offsetX / this.noteWidth;
   var note = Math.ceil((this.th - e.offsetY) / this.noteHeight);
-  console.log ("note number", note, "at moment", moment);
-  var selNotes = this.strip.getNoteAtPosition (moment, note);
-  console.log (selNotes);
+  return {
+    moment: moment,
+    note: note
+  }
+}
+
+RollView.prototype.getNoteFromEvent = function (e) {
+  
+  var pos = this.getPosFromEvent (e);
+  
+  return this.strip.getNoteAtPosition (pos.moment, pos.note);
+}
+
+RollView.prototype.downHandler = function (e) {
+  
+  var dirty = false;
+
+  var selNote = this.getNoteFromEvent (e);
+
+  if (selNote) {
+    this.selected = selNote.id;
+    this.down = true;
+    dirty = true;
+  }
+  else {
+    if (this.selected) {
+      this.selected = undefined;
+      dirty = true;
+    }
+  }
+
+  if (dirty) {
+    this.render();
+  }
+};
+
+RollView.prototype.moveHandler = function (e) {
+  var dirty = false;
+
+  var selNote = this.getNoteFromEvent (e);
+
+  if (this.down && this.selected) {
+    console.log ("bring the action!");
+    var pos = this.getPosFromEvent (e);
+    this.strip.moveNote (this.selected, pos.moment, pos.note);
+    dirty = true;
+  }
+
+  if (dirty) {
+    this.render();
+  }
+};
+
+RollView.prototype.upHandler = function (e) {
+  var dirty = false;
+
+  this.down = false;
+
+  var selNote = this.getNoteFromEvent (e);
+
+  /*this.selected = undefined;
+  dirty = true;*/
+
+  if (dirty) {
+    this.render();
+  }
 };
 
 
