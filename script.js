@@ -148,7 +148,7 @@ var RollView = function (el) {
   this.th = el.height;
   this.ctx = el.getContext("2d");
   this.down = false;
-  this.step = 0;
+  this.step =  SEMIMINIMA /*0*/;
   this.delta = null;
 
   this.strip = new Strip();
@@ -201,11 +201,11 @@ RollView.prototype.render = function () {
 
 RollView.prototype.getPosFromEvent = function (e) {
   var pos = getEventPosition (e, this.el);
-  var moment = e.offsetX / this.noteWidth;
-  var note = Math.ceil((this.th - e.offsetY) / this.noteHeight);
+  var start = e.offsetX / this.noteWidth;
+  var number = Math.ceil((this.th - e.offsetY) / this.noteHeight);
   return {
-    moment: moment,
-    note: note,
+    start: start,
+    number: number,
   };
 };
 
@@ -213,7 +213,7 @@ RollView.prototype.getNoteFromEvent = function (e) {
   
   var pos = this.getPosFromEvent (e);
   
-  return this.strip.getNoteAtPosition (pos.moment, pos.note);
+  return this.strip.getNoteAtPosition (pos.start, pos.number);
 };
 
 RollView.prototype.downHandler = function (e) {
@@ -250,7 +250,7 @@ RollView.prototype.moveHandler = function (e) {
     var pos = this.getPosFromEvent (e);
     
     var oldNote = this.strip.getNote (this.selected);
-    var delta = pos.moment - oldNote.start;
+    var delta = pos.start - oldNote.start;
 
     var newNote = {
       start : oldNote.start,
@@ -261,14 +261,22 @@ RollView.prototype.moveHandler = function (e) {
       this.delta = delta;
     }
 
-    if (Math.abs(delta) > this.step + this.delta) {
-      // Change horizontal position
-      newNote.start = pos.moment - this.delta;
+    // Change horizontal position
+    newNote.start = pos.start - this.delta;
+
+    if (this.step) {
+      newNote.start = Math.round(newNote.start / this.step) * this.step; 
+      if (newNote.start !== oldNote.start) {
+        dirty = true;
+      }
+    }
+    else {
       dirty = true;
     }
+    
     if (pos.note !== oldNote.number) {
       // Change vertical position
-      newNote.number = pos.note;
+      newNote.number = pos.number;
       dirty = true;
     }
 
