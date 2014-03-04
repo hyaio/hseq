@@ -70,26 +70,28 @@ var Note = function (start, duration, number, id) {
   this.duration = duration;
   this.number = number;
   this.id = id;
-}
+};
 Note.prototype.setStart = function (newStart) {
   this.start = newStart;
-}
+};
 Note.prototype.setDuration = function (newDuration) {
   this.duration = newDuration;
-}
+};
 Note.prototype.setNumber = function (newNumber) {
   this.number = newNumber;
-}
+};
+
 var Strip = function () {
   this.notesHash = {};
   this.notesArray = [];
-}
+};
+
 Strip.prototype.syncSort = function () {
   var sortable = [];
   for (var note in this.notesHash) {
       sortable.push(note.id);
   }
-  sortable.sort(function(a, b) {return a.start - b.start});
+  sortable.sort(function(a, b) {return a.start - b.start;});
   this.notesArray = sortable;
 };
 
@@ -107,10 +109,12 @@ Strip.prototype.getNote = function (id) {
 Strip.prototype.removeNote = function (id) {
   delete this.notesHash[id];
   this.syncSort();
-}; 
+};
+
 Strip.prototype.resizeNote = function (id, duration) {
   this.notesHash[id].setDuration(duration);
 };
+
 Strip.prototype.moveNote = function (id, start, number) {
   if (start !== null) {
     this.notesHash[id].setStart(start);
@@ -145,6 +149,7 @@ var RollView = function (el) {
   this.ctx = el.getContext("2d");
   this.down = false;
   this.step = 0;
+  this.delta = null;
 
   this.strip = new Strip();
   this.noteHeight = Math.round(this.th / (5 * 12));
@@ -187,7 +192,7 @@ RollView.prototype.render = function () {
       this.ctx.fillStyle = 'OrangeRed';
     }
     else {
-      this.ctx.fillStyle = '#FFC500'; 
+      this.ctx.fillStyle = '#FFC500';
     }
     
     this.ctx.fillRect(left, top, width, height);
@@ -200,16 +205,16 @@ RollView.prototype.getPosFromEvent = function (e) {
   var note = Math.ceil((this.th - e.offsetY) / this.noteHeight);
   return {
     moment: moment,
-    note: note
-  }
-}
+    note: note,
+  };
+};
 
 RollView.prototype.getNoteFromEvent = function (e) {
   
   var pos = this.getPosFromEvent (e);
   
   return this.strip.getNoteAtPosition (pos.moment, pos.note);
-}
+};
 
 RollView.prototype.downHandler = function (e) {
   
@@ -243,18 +248,33 @@ RollView.prototype.moveHandler = function (e) {
     console.log ("bring the action!");
 
     var pos = this.getPosFromEvent (e);
-    if (this.step) {
-      var oldNote = this.strip.getNote (this.selected);
-      if (Math.abs(pos.moment - oldNote.start) > this.step) {
-        this.strip.moveNote (this.selected, pos.moment, pos.note);
-        dirty = true;  
-      }
+    
+    var oldNote = this.strip.getNote (this.selected);
+    var delta = pos.moment - oldNote.start;
+
+    var newNote = {
+      start : oldNote.start,
+      number: oldNote.number,
+    };
+
+    if (this.delta === null) {
+      this.delta = delta;
     }
-    else {
-      this.strip.moveNote (this.selected, pos.moment, pos.note);
+
+    if (Math.abs(delta) > this.step + this.delta) {
+      // Change horizontal position
+      newNote.start = pos.moment - this.delta;
+      dirty = true;
+    }
+    if (pos.note !== oldNote.number) {
+      // Change vertical position
+      newNote.number = pos.note;
       dirty = true;
     }
 
+    if (dirty) {
+      this.strip.moveNote (this.selected, newNote.start, newNote.number);
+    }
     
   }
 
@@ -267,6 +287,7 @@ RollView.prototype.upHandler = function (e) {
   var dirty = false;
 
   this.down = false;
+  this.delta = null;
 
   var selNote = this.getNoteFromEvent (e);
 
