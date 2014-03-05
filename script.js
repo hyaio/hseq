@@ -175,6 +175,7 @@ RollView.prototype.setStep = function (step) {
 
 RollView.prototype.render = function () {
 
+  var selectedNote = null;
   var notes = this.strip.getHash();
   this.ctx.fillStyle = 'rgb(60,60,60)';
   this.ctx.fillRect(0, 0, this.tw, this.th);
@@ -187,15 +188,24 @@ RollView.prototype.render = function () {
     var top = this.th - (note.number * this.noteHeight);
     var height = this.noteHeight - 1;
     
-    // add linear gradient TODO
     if (this.selected && note.id === this.selected) {
-      this.ctx.fillStyle = 'OrangeRed';
+      // store it for later
+      selectedNote = {
+        left: left,
+        top: top,
+        width: width,
+        height: height
+      };
     }
     else {
       this.ctx.fillStyle = '#FFC500';
+      this.ctx.fillRect(left, top, width, height);
     }
-    
-    this.ctx.fillRect(left, top, width, height);
+  }
+  // At the end, paint the selected note
+  if (selectedNote) {
+    this.ctx.fillStyle = 'OrangeRed';
+    this.ctx.fillRect(selectedNote.left, selectedNote.top, selectedNote.width, selectedNote.height);
   }
 };
 
