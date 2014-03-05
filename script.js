@@ -148,8 +148,10 @@ var RollView = function (el) {
   this.th = el.height;
   this.ctx = el.getContext("2d");
   this.down = false;
-  this.step =  SEMIMINIMA /*0*/;
+  this.step = /* SEMIMINIMA */ 0;
+  this.defaultDuration = SEMICROMA;
   this.delta = null;
+  this.mode = "EDIT" /* "ADD", "REMOVE" */;
 
   this.strip = new Strip();
   this.noteHeight = Math.round(this.th / (5 * 12));
@@ -157,10 +159,12 @@ var RollView = function (el) {
   this.boundDownHandler = this.downHandler.bind(this);
   this.boundMoveHandler = this.moveHandler.bind(this);
   this.boundUpHandler = this.upHandler.bind(this);
+  this.boundDblHandler = this.dblHandler.bind(this);
 
   el.addEventListener("mousedown", this.boundDownHandler);
   el.addEventListener("mousemove", this.boundMoveHandler);
   el.addEventListener("mouseup", this.boundUpHandler);
+  el.addEventListener("dblclick", this.boundDblHandler);
 
   // TODO THIS IS TEST CODE
   this.strip.addNote (0, CROMA, 36);
@@ -313,6 +317,22 @@ RollView.prototype.upHandler = function (e) {
   dirty = true;*/
 
   if (dirty) {
+    this.render();
+  }
+};
+
+RollView.prototype.dblHandler = function (e) {
+  if (this.selected) {
+    this.strip.removeNote (this.selected);
+    this.selected = undefined;
+    this.render();
+  }
+  else {
+    var newNote = this.getPosFromEvent (e);
+    if (this.step) {
+      newNote.start = Math.round(newNote.start / this.step) * this.step; 
+    }
+    this.strip.addNote (newNote.start, this.defaultDuration, newNote.number);
     this.render();
   }
 };
