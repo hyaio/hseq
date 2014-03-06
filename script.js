@@ -154,6 +154,7 @@ var RollView = function (el) {
   this.mode = "EDIT" /* "ADD", "REMOVE" */;
   this.resizing = false;
   this.moving = false;
+  this._renderBound = this._render.bind(this);
 
   this.strip = new Strip();
   this.noteHeight = Math.round(this.th / (5 * 12));
@@ -178,7 +179,7 @@ RollView.prototype.setDefaultDuration = function (duration) {
   this.defaultDuration = duration;
 };
 
-RollView.prototype.render = function () {
+RollView.prototype._render = function () {
 
   var selectedNote = null;
   var notes = this.strip.getHash();
@@ -213,6 +214,10 @@ RollView.prototype.render = function () {
     this.ctx.fillRect(selectedNote.left, selectedNote.top, selectedNote.width, selectedNote.height);
   }
 };
+
+RollView.prototype.render = function () {
+  window.requestAnimationFrame(this._renderBound);
+}
 
 RollView.prototype.getPosFromEvent = function (e) {
   var pos = getEventPosition (e, this.el);
