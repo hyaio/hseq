@@ -148,10 +148,12 @@ var RollView = function (el) {
   this.th = el.height;
   this.ctx = el.getContext("2d");
   this.down = false;
-  this.step = /* SEMIMINIMA */ 0;
+  this.step = SEMIMINIMA /* 0 */;
   this.defaultDuration = SEMICROMA;
   this.delta = null;
   this.mode = "EDIT" /* "ADD", "REMOVE" */;
+  this.resizing = false;
+  this.moving = false;
 
   this.strip = new Strip();
   this.noteHeight = Math.round(this.th / (5 * 12));
@@ -258,6 +260,7 @@ RollView.prototype.moveHandler = function (e) {
 
   var selNote = this.getNoteFromEvent (e);
 
+  // If this is a dragging event and some note is selected
   if (this.down && this.selected) {
     console.log ("bring the action!");
 
@@ -266,36 +269,54 @@ RollView.prototype.moveHandler = function (e) {
     var oldNote = this.strip.getNote (this.selected);
     var delta = pos.start - oldNote.start;
 
-    var newNote = {
-      start : oldNote.start,
-      number: oldNote.number,
-    };
-
-    if (this.delta === null) {
-      this.delta = delta;
-    }
-
-    // Change horizontal position
-    newNote.start = pos.start - this.delta;
-
-    if (this.step) {
-      newNote.start = Math.round(newNote.start / this.step) * this.step; 
-      if (newNote.start !== oldNote.start) {
+    // If we're already resizing, or we're dragging for the first time on the last 20% of the note, do the resize
+    if (!this.moving && (this.resizing || delta > oldNote.duration * 0.8)) {
+      this.resizing = true;
+  
+      var newDuration = delta;
+      if (newDuration > SEMICROMA) {
+        this.strip.resizeNote (this.selected, newDuration);
         dirty = true;
       }
-    }
-    else {
-      dirty = true;
-    }
-    
-    if (pos.note !== oldNote.number) {
-      // Change vertical position
-      newNote.number = pos.number;
-      dirty = true;
-    }
+      else {
+        console.log ("Minimum duration!");
+      }
 
-    if (dirty) {
-      this.strip.moveNote (this.selected, newNote.start, newNote.number);
+    }
+    // else do the move
+    else {
+      this.moving = true;
+      var newNote = {
+        start : oldNote.start,
+        number: oldNote.number,
+      };
+
+      if (this.delta === null) {
+        this.delta = delta;
+      }
+
+      // Change horizontal position
+      newNote.start = pos.start - this.delta;
+
+      if (this.step) {
+        newNote.start = Math.round(newNote.start / this.step) * this.step;
+        if (newNote.start !== oldNote.start) {
+          dirty = true;
+        }
+      }
+      else {
+        dirty = true;
+      }
+      
+      if (pos.note !== oldNote.number) {
+        // Change vertical position
+        newNote.number = pos.number;
+        dirty = true;
+      }
+
+      if (dirty) {
+        this.strip.moveNote (this.selected, newNote.start, newNote.number);
+      }
     }
     
   }
@@ -310,6 +331,8 @@ RollView.prototype.upHandler = function (e) {
 
   this.down = false;
   this.delta = null;
+  this.resizing = false;
+  this.moving = false;
 
   var selNote = this.getNoteFromEvent (e);
 
