@@ -148,8 +148,8 @@ var RollView = function (el) {
   this.th = el.height;
   this.ctx = el.getContext("2d");
   this.down = false;
-  this.step = /*SEMIMINIMA*/ 0;
-  this.defaultDuration = SEMICROMA;
+  this.step = CROMA;
+  this.defaultDuration = SEMIMINIMA;
   this.delta = null;
   this.mode = "EDIT" /* "ADD", "REMOVE" */;
   this.resizing = false;
@@ -168,15 +168,14 @@ var RollView = function (el) {
   el.addEventListener("mouseup", this.boundUpHandler);
   el.addEventListener("dblclick", this.boundDblHandler);
 
-  // TODO THIS IS TEST CODE
-  this.strip.addNote (0, CROMA, 36);
-  this.strip.addNote (0.5, CROMA, 36);
-  this.strip.addNote (1, MINIMA, 38);
-  this.render ();
 };
 
 RollView.prototype.setStep = function (step) {
   this.step = step;
+};
+
+RollView.prototype.setDefaultDuration = function (duration) {
+  this.defaultDuration = duration;
 };
 
 RollView.prototype.render = function () {
@@ -275,7 +274,7 @@ RollView.prototype.moveHandler = function (e) {
     
       var newDuration = delta;
       if (this.step) {
-        var newDuration = Math.round((newDuration / this.step) * this.step);
+        var newDuration = Math.round(newDuration / this.step) * this.step;
       }
 
       if (newDuration > SEMICROMA) {
@@ -364,6 +363,14 @@ RollView.prototype.dblHandler = function (e) {
 
 // INIT
 var sheet = document.querySelector("#sheet");
+var snapMenu = document.querySelector("#snap");
+var durationMenu = document.querySelector("#newnote");
 
 var rollView = new RollView (sheet);
+snapMenu.addEventListener("change", function (e) {
+  rollView.setStep (parseFloat(e.target.value, 10));
+});
+durationMenu.addEventListener("change", function (e) {
+  rollView.setDefaultDuration (parseFloat(e.target.value, 10));
+});
 
