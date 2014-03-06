@@ -148,7 +148,7 @@ var RollView = function (el) {
   this.th = el.height;
   this.ctx = el.getContext("2d");
   this.down = false;
-  this.step = SEMIMINIMA /* 0 */;
+  this.step = /*SEMIMINIMA*/ 0;
   this.defaultDuration = SEMICROMA;
   this.delta = null;
   this.mode = "EDIT" /* "ADD", "REMOVE" */;
@@ -272,8 +272,12 @@ RollView.prototype.moveHandler = function (e) {
     // If we're already resizing, or we're dragging for the first time on the last 20% of the note, do the resize
     if (!this.moving && (this.resizing || delta > oldNote.duration * 0.8)) {
       this.resizing = true;
-  
+    
       var newDuration = delta;
+      if (this.step) {
+        var newDuration = Math.round((newDuration / this.step) * this.step);
+      }
+
       if (newDuration > SEMICROMA) {
         this.strip.resizeNote (this.selected, newDuration);
         dirty = true;
@@ -335,9 +339,6 @@ RollView.prototype.upHandler = function (e) {
   this.moving = false;
 
   var selNote = this.getNoteFromEvent (e);
-
-  /*this.selected = undefined;
-  dirty = true;*/
 
   if (dirty) {
     this.render();
