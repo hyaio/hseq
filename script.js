@@ -180,6 +180,10 @@ RollView.prototype.setDefaultDuration = function (duration) {
 };
 
 RollView.prototype._renderGrid = function () {
+
+  if (!this.step) {
+    return;
+  }
   
   var gridGap = this.noteWidth * this.step;
 
