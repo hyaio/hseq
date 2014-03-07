@@ -179,12 +179,30 @@ RollView.prototype.setDefaultDuration = function (duration) {
   this.defaultDuration = duration;
 };
 
+RollView.prototype._renderGrid = function () {
+  
+  var gridGap = this.noteWidth * this.step;
+
+  this.ctx.beginPath();
+
+  for (var x = 0.5; x < this.tw; x += gridGap) {
+    this.ctx.moveTo(x, 0);
+    this.ctx.lineTo(x, this.th);
+  }
+
+  this.ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
+  this.ctx.stroke();
+
+};
+
 RollView.prototype._render = function () {
 
   var selectedNote = null;
   var notes = this.strip.getHash();
   this.ctx.fillStyle = 'rgb(60,60,60)';
   this.ctx.fillRect(0, 0, this.tw, this.th);
+
+  this._renderGrid();
   
   for (var n in notes) {
     
@@ -213,6 +231,7 @@ RollView.prototype._render = function () {
     this.ctx.fillStyle = 'OrangeRed';
     this.ctx.fillRect(selectedNote.left, selectedNote.top, selectedNote.width, selectedNote.height);
   }
+
 };
 
 RollView.prototype.render = function () {
@@ -364,7 +383,6 @@ RollView.prototype.dblHandler = function (e) {
     this.render();
   }
 };
-
 
 // INIT
 var sheet = document.querySelector("#sheet");
