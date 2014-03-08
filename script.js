@@ -158,7 +158,7 @@ var RollView = function (el) {
 
   this.strip = new Strip();
   this.noteHeight = Math.round(this.th / (5 * 12));
-  this.noteWidth = Math.round(this.tw / (4 * 32));
+  this.noteWidth = Math.round(this.tw / 8);
   this.boundDownHandler = this.downHandler.bind(this);
   this.boundMoveHandler = this.moveHandler.bind(this);
   this.boundUpHandler = this.upHandler.bind(this);
@@ -198,6 +198,8 @@ RollView.prototype._renderGrid = function () {
 
   this.ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
   this.ctx.stroke();
+
+  // TODO INSERT NUMBERS
 
 };
 
