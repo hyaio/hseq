@@ -19,7 +19,7 @@ body {
   position: absolute;
   left: 0;
   width: 80px;
-  height: 840px;
+  height: 1680px;
   overflow: scroll;
   background-color: black;
 }
@@ -28,7 +28,7 @@ body {
   position: absolute;
   left: 80px;
   width: 500px;
-  height: 840px;
+  height: 1680px;
   overflow: scroll;
   background-color: white;
 }
