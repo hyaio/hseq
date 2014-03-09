@@ -1,5 +1,9 @@
 body {
   margin: 0;
+  -webkit-user-select: none;  /* Chrome all / Safari all */
+  -moz-user-select: none;     /* Firefox all */
+  -ms-user-select: none;
+  user-select: none;
 }
 
 #container {
@@ -19,7 +23,7 @@ body {
   position: absolute;
   left: 0;
   width: 80px;
-  height: 1680px;
+  height: 1500px;
   overflow: scroll;
   background-color: black;
 }
@@ -28,7 +32,7 @@ body {
   position: absolute;
   left: 80px;
   width: 500px;
-  height: 1680px;
+  height: 1500px;
   overflow: scroll;
   background-color: white;
 }
