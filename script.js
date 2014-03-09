@@ -191,14 +191,14 @@ RollView.prototype._renderGrid = function () {
 
   if (this.step) {
     // Draw the grid
-    for (var x = 0; x < this.tw; x += gridGap) {
+    for (var x = 0; x <= this.tw; x += gridGap) {
       this.ctx.moveTo(x, 0);
       this.ctx.lineTo(x, this.th);
     }
   }
 
   // Draw the horizontal lines
-  for (var y = 0; y < this.th; y += this.noteHeight) {
+  for (var y = 0; y <= this.th; y += this.noteHeight) {
     this.ctx.moveTo(0, y);
     this.ctx.lineTo(this.tw, y);
   }
@@ -405,7 +405,6 @@ var PianoView = function (el, minOct, octaves) {
   this.minOct = minOct;
   this.octaves = octaves;
 
-  //var keyboardNotes = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
   var keyboardNotes = ["B", "A#", "A", "G#", "G", "F#", "F", "E", "D#", "D", "C#", "C"];
 
   var nNotes = octaves * 12;
@@ -413,7 +412,7 @@ var PianoView = function (el, minOct, octaves) {
   for (var i = 0; i < nNotes; i+=1) {
 
     var noteName = keyboardNotes[i % 12];
-    var oct = minOct + Math.floor (i/12);
+    var oct = minOct + (octaves - Math.floor (i/12)) - 1;
 
     var accident = (noteName.charAt(1) === "#");
 

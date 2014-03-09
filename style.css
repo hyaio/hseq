@@ -13,10 +13,10 @@ body {
 }
 #interface {
   position: relative;
-  width: 580px;
+  width: 600px;
   height:300px;
   overflow: scroll;
-  background-color: rgb(60,60,60);
+  background-color: black;
 }
 
 #piano {
@@ -24,7 +24,7 @@ body {
   left: 0;
   width: 80px;
   height: 1500px;
-  overflow: scroll;
+  overflow: auto;
   background-color: black;
 }
 
