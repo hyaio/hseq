@@ -392,10 +392,32 @@ RollView.prototype.dblHandler = function (e) {
   }
 };
 
+var PianoView = function (el, minOct, octaves) {
+  this.el = el;
+  this.tw = el.width;
+  this.th = el.height;
+  this.ctx = el.getContext("2d");
+  this.minOct = minOct;
+  this.octaves = octaves;
+
+  var nNotes = octaves * 12;
+  for (var i = 0; i < nNotes; i+=1) {
+    this.ctx.fillStyle = '#ffffff';
+    this.ctx.strokeStyle = '#230000';
+    var width = this.tw;
+    var height = this.th / nNotes;
+    var top = i * height;
+    var left = 0;
+    this.ctx.fillRect(left, top, width, height - 1);
+  }
+
+}
+
 // INIT
 var sheet = document.querySelector("#sheet");
 var snapMenu = document.querySelector("#snap");
 var durationMenu = document.querySelector("#newnote");
+var piano = document.querySelector("#piano");
 
 var rollView = new RollView (sheet);
 snapMenu.addEventListener("change", function (e) {
@@ -405,4 +427,6 @@ snapMenu.addEventListener("change", function (e) {
 durationMenu.addEventListener("change", function (e) {
   rollView.setDefaultDuration (parseFloat(e.target.value, 10));
 });
+
+var pianoView = new PianoView (piano, 2, 5);
 
