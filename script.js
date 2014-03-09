@@ -183,23 +183,28 @@ RollView.prototype.setDefaultDuration = function (duration) {
 
 RollView.prototype._renderGrid = function () {
 
-  if (!this.step) {
-    return;
-  }
+  
   
   var gridGap = this.noteWidth * this.step;
 
   this.ctx.beginPath();
 
-  for (var x = 0.5; x < this.tw; x += gridGap) {
-    this.ctx.moveTo(x, 0);
-    this.ctx.lineTo(x, this.th);
+  if (this.step) {
+    // Draw the grid
+    for (var x = 0; x < this.tw; x += gridGap) {
+      this.ctx.moveTo(x, 0);
+      this.ctx.lineTo(x, this.th);
+    }
+  }
+
+  // Draw the horizontal lines
+  for (var y = 0; y < this.th; y += this.noteHeight) {
+    this.ctx.moveTo(0, y);
+    this.ctx.lineTo(this.tw, y);
   }
 
   this.ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
   this.ctx.stroke();
-
-  // TODO INSERT NUMBERS
 
 };
 
@@ -385,7 +390,7 @@ RollView.prototype.dblHandler = function (e) {
   else {
     var newNote = this.getPosFromEvent (e);
     if (this.step) {
-      newNote.start = Math.round(newNote.start / this.step) * this.step;
+      newNote.start = Math.floor(newNote.start / this.step) * this.step;
     }
     this.strip.addNote (newNote.start, this.defaultDuration, newNote.number);
     this.render();
@@ -412,6 +417,7 @@ var PianoView = function (el, minOct, octaves) {
 
     var accident = (noteName.charAt(1) === "#");
 
+    // Draw the key
     if (accident) {
       this.ctx.fillStyle = "black";
     }
@@ -425,6 +431,7 @@ var PianoView = function (el, minOct, octaves) {
     var left = 0;
     this.ctx.fillRect(left, top, width, height - 1);
 
+    // Draw text
     if (accident) {
       this.ctx.fillStyle = "white";
     }
@@ -433,7 +440,6 @@ var PianoView = function (el, minOct, octaves) {
     }
     
     var noteString = noteName + " " + oct;
-    console.log (noteString);
     this.ctx.font = "bold 12px sans-serif";
     this.ctx.fillText(noteString, 20, top + 18);
   }
