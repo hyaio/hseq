@@ -439,10 +439,26 @@ var PianoView = function (el, minOct, octaves) {
     }
     
     var noteString = noteName + " " + oct;
-    this.ctx.font = "14px Exo 2";
+    this.ctx.font = "12px 'Exo 2'";
     this.ctx.fillText(noteString, 20, top + 18);
   }
 
+}
+
+var ControlModel = function () {
+  this.data = [];
+}
+ControlModel.prototype.getData = function () {
+  return this.data;
+}
+ControlModel.prototype.setData = function (data) {
+  this.data = data;
+}
+ControlModel.prototype.getValue = function (index) {
+  return this.data[index];
+}
+ControlModel.prototype.setValue = function (index, value) {
+  this.data[index] = value;
 }
 
 var ControlView = function (el) {
@@ -452,7 +468,18 @@ var ControlView = function (el) {
   this.ctx = el.getContext("2d");
   this.down = false;
 
-  this.controlData = [];
+  this.controlData = {
+    "cc21": new ControlModel(),
+    "cc22": new ControlModel(),
+    "cc23": new ControlModel(),
+    "cc24": new ControlModel(),
+    "cc25": new ControlModel(),
+    "cc26": new ControlModel(),
+    "cc27": new ControlModel(),
+    "cc28": new ControlModel(),
+  };
+
+  this.currentController = "cc21";
 
   this.step = this.tw / 32;
 
@@ -483,12 +510,14 @@ ControlView.prototype._render = function () {
 
   this.ctx.fillStyle = '#80C5FF';
 
-  for (var i = 0; i < this.controlData.length; i += 1) {
-    value = this.controlData[i];
+  var data = this.controlData[this.currentController].getData();
+
+  for (var i = 0; i < data.length; i += 1) {
+    value = data[i];
     if (value) {
       var left = i * this.step;
       var width = 8;
-      var top = value * 127
+      var top = value * 127;
       var height = this.th - top;
       this.ctx.fillRect(left, top, width, height);
     }
@@ -501,7 +530,8 @@ ControlView.prototype._calculate = function (e) {
   var bin = Math.floor (e.offsetX / this.step);
   var value = e.offsetY / 127;
 
-  this.controlData[bin] = value;
+  //this.controlData[bin] = value;
+  this.controlData[this.currentController].setValue (bin, value);
 
 }
 
