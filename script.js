@@ -497,7 +497,7 @@ var ControlView = function (el) {
 
 };
 
-ControlView.prototype.render = function (e) {
+ControlView.prototype.render = function () {
   window.requestAnimationFrame(this._renderBound);
 };
 
@@ -517,7 +517,7 @@ ControlView.prototype._render = function () {
     if (value) {
       var left = i * this.step;
       var width = 8;
-      var top = value * 127;
+      var top = this.th - ((value / 127) * this.th);
       var height = this.th - top;
       this.ctx.fillRect(left, top, width, height);
     }
@@ -528,9 +528,8 @@ ControlView.prototype._render = function () {
 ControlView.prototype._calculate = function (e) {
 
   var bin = Math.floor (e.offsetX / this.step);
-  var value = e.offsetY / 127;
+  var value = Math.round(((this.th - e.offsetY) / this.th) * 127);
 
-  //this.controlData[bin] = value;
   this.controlData[this.currentController].setValue (bin, value);
 
 }
@@ -539,7 +538,7 @@ ControlView.prototype.downHandler = function (e) {
   this.down = true;
 
   this._calculate(e);
-  this.render(e);
+  this.render();
 };
 
 ControlView.prototype.upHandler = function () {
@@ -549,9 +548,14 @@ ControlView.prototype.upHandler = function () {
 ControlView.prototype.moveHandler = function (e) {
   if (this.down) {
     this._calculate(e);
-    this.render(e);
+    this.render();
   }
 };
+
+ControlView.prototype.setCurrent = function (current) {
+  this.currentController = current;
+  this.render();
+}
 
 // INIT
 var sheet = document.querySelector("#sheet");
