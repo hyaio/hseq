@@ -312,13 +312,14 @@ RollView.prototype.moveHandler = function (e) {
         newDuration = Math.round(newDuration / this.step) * this.step;
       }
 
-      if (newDuration > SEMICROMA) {
-        this.strip.resizeNote (this.selected, newDuration);
-        dirty = true;
+      if (newDuration < this.step) {
+        newDuration = this.step;
       }
-      else {
-        console.log ("Minimum duration!");
+      if (newDuration < (SEMICROMA / 2)) {
+        newDuration = SEMICROMA / 2;
       }
+      this.strip.resizeNote (this.selected, newDuration);
+      dirty = true;
 
     }
     // else do the move
