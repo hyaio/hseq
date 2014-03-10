@@ -445,6 +445,41 @@ var PianoView = function (el, minOct, octaves) {
 
 }
 
+var ControlView = function (el) {
+  this.el = el;
+  this.tw = el.width;
+  this.th = el.height;
+  this.ctx = el.getContext("2d");
+  this.down = false;
+
+  this.boundDownHandler = this.downHandler.bind(this);
+  this.boundMoveHandler = this.moveHandler.bind(this);
+  this.boundUpHandler = this.upHandler.bind(this);
+
+  el.addEventListener("mousedown", this.boundDownHandler);
+  el.addEventListener("mousemove", this.boundMoveHandler);
+  el.addEventListener("mouseup", this.boundUpHandler);
+
+};
+
+ControlView.prototype._render = function () {
+
+};
+
+ControlView.prototype.downHandler = function () {
+  this.down = true;
+};
+
+ControlView.prototype.upHandler = function () {
+  this.down = false;
+};
+
+ControlView.prototype.moveHandler = function () {
+  if (this.down) {
+
+  }
+};
+
 // INIT
 var sheet = document.querySelector("#sheet");
 var snapMenu = document.querySelector("#snap");

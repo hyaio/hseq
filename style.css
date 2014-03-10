@@ -36,3 +36,11 @@ body {
   overflow: scroll;
   background-color: white;
 }
+
+#controls {
+  position: absolute;
+  left: 80px;
+  width: 500px;
+  height: 140px;
+  background-color: black;
+}
