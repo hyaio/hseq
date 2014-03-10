@@ -84,6 +84,21 @@ select {
 
 #control-selector {
   width: 80%;
-  margin-top: 4px;
+  margin-top: 8px;
   margin-left: 8%;
 }
+
+.reset-button {
+  width: 80%;
+  margin-top: 2px;
+  margin-left: 8%;
+  height: 32px;
+  background-color: firebrick;
+  border-color: firebrick;
+  color: white;
+  font-family: "Exo 2";
+  font-size: 14px;
+  margin-top: 20px;
+}
+
+
