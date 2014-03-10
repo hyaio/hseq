@@ -40,7 +40,7 @@ body {
 
 #controls {
   position: absolute;
-  top: 15px;
+  top: 12px;
   left: 80px;
   width: 500px;
   height: 100px;
@@ -101,4 +101,7 @@ select {
   margin-top: 20px;
 }
 
+.inputs {
+  border-bottom: 2px solid rgb(70, 70, 70);
+}
 
