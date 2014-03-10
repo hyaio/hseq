@@ -182,8 +182,6 @@ RollView.prototype.setDefaultDuration = function (duration) {
 };
 
 RollView.prototype._renderGrid = function () {
-
-  
   
   var gridGap = this.noteWidth * this.step;
 
@@ -452,6 +450,12 @@ var ControlView = function (el) {
   this.ctx = el.getContext("2d");
   this.down = false;
 
+  this.controlData = [];
+
+  this.step = this.tw / 32;
+
+  this._renderBound = this._render.bind(this);
+
   this.boundDownHandler = this.downHandler.bind(this);
   this.boundMoveHandler = this.moveHandler.bind(this);
   this.boundUpHandler = this.upHandler.bind(this);
@@ -462,21 +466,56 @@ var ControlView = function (el) {
 
 };
 
+ControlView.prototype.render = function (e) {
+  window.requestAnimationFrame(this._renderBound);
+};
+
 ControlView.prototype._render = function () {
+
+  var value;
+
+  this.ctx.fillStyle = '#0D0D0D';
+  this.ctx.fillRect(0, 0, this.tw, this.th);
+
+  this.ctx.fillStyle = '#80C5FF';
+
+  for (var i = 0; i < this.controlData.length; i += 1) {
+    value = this.controlData[i];
+    if (value) {
+      var left = i * this.step;
+      var width = 8;
+      var top = value * 127
+      var height = this.th - top;
+      this.ctx.fillRect(left, top, width, height);
+    }
+  }
 
 };
 
-ControlView.prototype.downHandler = function () {
+ControlView.prototype._calculate = function (e) {
+
+  var bin = Math.floor (e.offsetX / this.step);
+  var value = e.offsetY / 127;
+
+  this.controlData[bin] = value;
+
+}
+
+ControlView.prototype.downHandler = function (e) {
   this.down = true;
+
+  this._calculate(e);
+  this.render(e);
 };
 
 ControlView.prototype.upHandler = function () {
   this.down = false;
 };
 
-ControlView.prototype.moveHandler = function () {
+ControlView.prototype.moveHandler = function (e) {
   if (this.down) {
-
+    this._calculate(e);
+    this.render(e);
   }
 };
 
@@ -485,6 +524,7 @@ var sheet = document.querySelector("#sheet");
 var snapMenu = document.querySelector("#snap");
 var durationMenu = document.querySelector("#newnote");
 var piano = document.querySelector("#piano");
+var controls = document.querySelector("#controls");
 
 var rollView = new RollView (sheet);
 snapMenu.addEventListener("change", function (e) {
@@ -496,4 +536,6 @@ durationMenu.addEventListener("change", function (e) {
 });
 
 var pianoView = new PianoView (piano, 2, 5);
+
+var controlView = new ControlView (controls);
 
