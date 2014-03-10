@@ -313,7 +313,8 @@ RollView.prototype.moveHandler = function (e) {
       }
 
       if (newDuration < this.step) {
-        newDuration = this.step;
+        newDuration = oldNote.duration;
+        dirty = false;
       }
       if (newDuration < (SEMICROMA / 2)) {
         newDuration = SEMICROMA / 2;
