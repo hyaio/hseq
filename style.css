@@ -17,6 +17,7 @@ body {
   height:300px;
   overflow: scroll;
   background-color: black;
+  border-bottom: 2px solid rgb(66, 65, 65);
 }
 
 #piano {
@@ -43,4 +44,22 @@ body {
   width: 500px;
   height: 140px;
   background-color: black;
+}
+
+#control-div {
+  position: absolute;
+  left: 0;
+  width: 80px;
+  background-color: black;
+  height: 140px;
+}
+
+#plugin-container {
+  background: black;
+  width: 600px;
+  height: 480px;
+}
+
+label {
+  color: white;
 }

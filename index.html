@@ -6,36 +6,48 @@
   </head>
 
   <body>
-
-    <input>Name</input>
-    <label for="snap">Snap to grid</label>
-    <select name="snap" id="snap">
-      <option value="0">None</option>
-      <option value="0.25">1/16</option> 
-      <option value="0.5" selected>1/8</option>
-      <option value="1">1/4</option>
-      <option value="2">1/2</option>
-      <option value="4">1</option>
-    </select>
-
-    <label for="newnote">Note duration</label>
-    <select name="newnote" id="newnote">
-      <option value="0.25">1/16</option> 
-      <option value="0.5">1/8</option>
-      <option value="1" selected>1/4</option>
-      <option value="2">1/2</option>
-      <option value="4">1</option>
-    </select>
+    <div id="plugin-container">
+      <div>
+        <input>Name</input>
+        <label for="snap">Snap to grid</label>
+        <select name="snap" id="snap">
+          <option value="0">None</option>
+          <option value="0.25">1/16</option> 
+          <option value="0.5" selected>1/8</option>
+          <option value="1">1/4</option>
+          <option value="2">1/2</option>
+          <option value="4">1</option>
+        </select>
 
 
+        <label for="newnote">Note duration</label>
+        <select name="newnote" id="newnote">
+          <option value="0.25">1/16</option> 
+          <option value="0.5">1/8</option>
+          <option value="1" selected>1/4</option>
+          <option value="2">1/2</option>
+          <option value="4">1</option>
+        </select>
+      </div>
 
-  <div id="container">
-    <div id="interface">
-      <canvas width="500" height="1500px" id="sheet"></canvas>
-      <canvas width="80" height="1500px" id="piano"></canvas>
+      <div id="container">
+        <div id="interface">
+          <canvas width="500" height="1500px" id="sheet"></canvas>
+          <canvas width="80" height="1500px" id="piano"></canvas>
+        </div>
+        <div id="control-div">
+          <label for="control-selector">Controller</label>
+          <select name="control-selector" id="control-selector">
+            <option value="CC21" selected>CC21</option> 
+            <option value="CC22">CC22</option>
+            <option value="CC23">CC23</option>
+            <option value="CC24">CC24</option>
+            <option value="CC25">CC25</option>
+          </select>  
+        </div>
+        <canvas width="500" height="140" id="controls"></canvas>
+      </div> <!-- container -->
     </div>
-    <canvas width="500" height="140" id="controls"></canvas>
-  </div>
   </body>
   
   <script src="script.js"></script>

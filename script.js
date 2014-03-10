@@ -210,7 +210,7 @@ RollView.prototype._render = function () {
 
   var selectedNote = null;
   var notes = this.strip.getHash();
-  this.ctx.fillStyle = 'rgb(60,60,60)';
+  this.ctx.fillStyle = 'rgb(30,30,30)';
   this.ctx.fillRect(0, 0, this.tw, this.th);
 
   this._renderGrid();
