@@ -437,7 +437,7 @@ var PianoView = function (el, minOct, octaves) {
     }
     
     var noteString = noteName + " " + oct;
-    this.ctx.font = "bold 12px sans-serif";
+    this.ctx.font = "14px Exo 2";
     this.ctx.fillText(noteString, 20, top + 18);
   }
 
@@ -464,6 +464,8 @@ var ControlView = function (el) {
   el.addEventListener("mousemove", this.boundMoveHandler);
   el.addEventListener("mouseup", this.boundUpHandler);
 
+  this.render();
+
 };
 
 ControlView.prototype.render = function (e) {
@@ -474,7 +476,7 @@ ControlView.prototype._render = function () {
 
   var value;
 
-  this.ctx.fillStyle = '#0D0D0D';
+  this.ctx.fillStyle = 'rgb(20,20,20)';
   this.ctx.fillRect(0, 0, this.tw, this.th);
 
   this.ctx.fillStyle = '#80C5FF';

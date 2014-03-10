@@ -3,12 +3,16 @@
 
   <head>
     <link rel="stylesheet" href="style.css">
+    <link href='http://fonts.googleapis.com/css?family=Exo+2:400,200,300' rel='stylesheet' type='text/css'>
   </head>
 
   <body>
     <div id="plugin-container">
       <div>
-        <input>Name</input>
+
+      <label for="pattern-name">Pattern</label>
+        <input name="pattern-name" id="pattern-name"></input>
+
         <label for="snap">Snap to grid</label>
         <select name="snap" id="snap">
           <option value="0">None</option>
@@ -36,16 +40,17 @@
           <canvas width="80" height="1500px" id="piano"></canvas>
         </div>
         <div id="control-div">
-          <label for="control-selector">Controller</label>
+          <label for="control-selector">MIDI Ctrl</label>
           <select name="control-selector" id="control-selector">
             <option value="CC21" selected>CC21</option> 
             <option value="CC22">CC22</option>
             <option value="CC23">CC23</option>
             <option value="CC24">CC24</option>
             <option value="CC25">CC25</option>
-          </select>  
+          </select>
+          <canvas width="500" height="100" id="controls"></canvas>  
         </div>
-        <canvas width="500" height="140" id="controls"></canvas>
+        
       </div> <!-- container -->
     </div>
   </body>
