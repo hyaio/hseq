@@ -15,7 +15,7 @@ body {
   position: relative;
   width: 600px;
   height:300px;
-  overflow: scroll;
+  overflow: auto;
   background-color: black;
   border-bottom: 2px solid rgb(66, 65, 65);
 }
@@ -34,7 +34,7 @@ body {
   left: 80px;
   width: 500px;
   height: 1500px;
-  overflow: scroll;
+  overflow: hidden;
   background-color: white;
 }
 
