@@ -1,0 +1,39 @@
+#container {
+  width: 600px;
+  height: 460px;
+  background-color: black;
+  position: absolute;
+}
+label {
+  color: white;
+  font-family: 'Exo 2', sans-serif;
+  font-weight: 300;
+  margin: 5px;
+}
+
+.pattern-sequencer-container {
+    overflow: scroll;
+    height: 400px;;
+}
+
+.inputs {
+  border-bottom: 2px solid rgb(70, 70, 70);
+}
+
+.pattern-list {
+  background-color: rgb(34, 33, 33);
+  width: 159px;
+  height: 398px;
+  position: absolute;
+  top: 59px;
+}
+
+canvas {
+  margin-left: 160px;
+}
+
+.time-indicator {
+  margin-left: 160px;
+  color: whitesmoke;
+  height: 34px;
+}
