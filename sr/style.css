@@ -1,3 +1,6 @@
+body {
+  margin:0;
+}
 #container {
   width: 600px;
   height: 460px;
@@ -12,28 +15,33 @@ label {
 }
 
 .pattern-sequencer-container {
-    overflow: scroll;
-    height: 400px;;
+  overflow: scroll;
+  height: 380px;
+  width: 159px;
+  left: 0px;
+  position: absolute;
 }
 
 .inputs {
+  padding: 4px;
   border-bottom: 2px solid rgb(70, 70, 70);
 }
 
 .pattern-list {
   background-color: rgb(34, 33, 33);
-  width: 159px;
-  height: 398px;
+  width: 158px;
+  height: 369px;
+  left: 0px;
   position: absolute;
-  top: 59px;
+  top: 38px;
 }
 
-canvas {
-  margin-left: 160px;
+.pattern-sequencer {
+  /*margin-left: 160px;*/
 }
 
-.time-indicator {
-  margin-left: 160px;
-  color: whitesmoke;
+.clock-canvas {
+  /*left: 160px;*/
+  top: 0;
   height: 34px;
 }

@@ -1,3 +1,24 @@
+var TimeIndicator = function (el, options) {
+  this.el = el;
+  this.ctx = el.getContext("2d");
+  this.patternN = options.patternN;
+  this.songLen = options.songLen;
+  this.patternW = 90;
+  this.el.width = this.patternW * this.songLen;
+  this.el.height = 36;
+  this.render();
+}
+
+TimeIndicator.prototype.render = function () {
+  for (var x = 0; x < this.el.width; x += this.patternW) {
+    this.ctx.moveTo(x, 0);
+    this.ctx.lineTo(x, this.th);
+  }
+  this.ctx.strokeStyle = 'rgba(255, 255, 255, 1)';
+  this.ctx.stroke();
+}
+
+
 var PatternView = function (el, options) {
   this.el = el;
   this.patterns = [{
@@ -29,7 +50,7 @@ var PatternSequencer = function (el, options) {
   this.ctx = el.getContext("2d");
   this.patternN = options.patternN;
   this.songLen = options.songLen;
-  this.patternH = 24;
+  this.patternH = 23;
   this.patternW = 90;
   this.setDimensions();
 
@@ -132,11 +153,17 @@ PatternSequencer.prototype._render = function () {
           this.ctx.lineTo(left + this.inset, top + height);
           this.ctx.lineTo(left, top + height - this.inset);
           this.ctx.fill();
-
-
         }
       }
   }
+
+  this.ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
+  // Render grid
+  for (var x = 0; x <= this.tw; x += this.patternW) {
+    this.ctx.moveTo(x, 0);
+    this.ctx.lineTo(x, this.th);
+  }
+  this.ctx.stroke();
 };
 
 PatternSequencer.prototype.render = function () {
@@ -145,6 +172,12 @@ PatternSequencer.prototype.render = function () {
 
 var psElement = document.querySelector(".pattern-sequencer");
 var ps = new PatternSequencer (psElement, {
-                                  songLen: 32,
-                                  patternN: 16
-                                });
+  songLen: 32,
+  patternN: 16
+});
+
+var clockElement = document.querySelector(".clock-canvas");
+var ti = new TimeIndicator (clockElement, {
+  songLen: 32,
+  patternN: 16
+})
