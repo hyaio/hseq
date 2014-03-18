@@ -80,3 +80,25 @@ canvas {
   float: right;
   right: 4px;
 }
+
+.erase-button {
+  width: 12%;
+  margin-top: 3px;
+  margin-left: 27%;
+}
+
+.red-button {
+  background-color: firebrick;
+  border-color: firebrick;
+  color: white;
+  font-family: "Exo 2";
+  font-size: 14px;
+}
+
+input {
+  width: 5%;
+}
+
+.inputs button {
+  float: right;
+}
