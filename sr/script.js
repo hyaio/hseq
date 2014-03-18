@@ -1,9 +1,89 @@
+var TimeIndicator = function (el, options) {
+  this.el = el;
+  this.ctx = el.getContext("2d");
+  this.patternN = options.patternN;
+  this.songLen = options.songLen;
+  this.patternW = 90;
+  this.el.width = this.patternW * this.songLen;
+  this.el.height = 36;
+  this.render();
+}
+
+TimeIndicator.prototype.render = function () {
+  for (var x = 0; x < this.el.width; x += this.patternW) {
+    this.ctx.moveTo(x, 0);
+    this.ctx.lineTo(x, this.th);
+  }
+  this.ctx.strokeStyle = 'rgba(255, 255, 255, 1)';
+  this.ctx.stroke();
+}
+
+
 var PatternView = function (el, options) {
   this.el = el;
   this.patterns = [{
     name: "Pattern 1",
     channel: 1
-  }];
+  },
+  {
+    name: "Pattern 2",
+    channel: 1
+  },
+  {
+    name: "Pattern 3",
+    channel: 1
+  },
+  {
+    name: "Pattern 4",
+    channel: 1
+  },
+  {
+    name: "Pattern 5",
+    channel: 1
+  },
+  {
+    name: "Pattern 7",
+    channel: 1
+  },
+  {
+    name: "Pattern 8",
+    channel: 1
+  },
+  {
+    name: "Pattern 9",
+    channel: 1
+  },
+  {
+    name: "Pattern 10",
+    channel: 1
+  },
+  {
+    name: "Pattern 11",
+    channel: 1
+  },
+  {
+    name: "Pattern 12",
+    channel: 1
+  },
+  {
+    name: "Pattern 13",
+    channel: 1
+  },
+  {
+    name: "Pattern 14",
+    channel: 1
+  },
+  {
+    name: "Pattern 15",
+    channel: 1
+  },
+  {
+    name: "Pattern 16",
+    channel: 1
+  }
+  ];
+
+  this._render();
 
 }
 
@@ -12,6 +92,7 @@ PatternView.prototype._render = function () {
   for (var i = 0; i < this.patterns.length; i += 1) {
     html += "<div class='pattern-item pattern-" + i + "'>" + this.patterns[i].name + " [Ch. " + this.patterns[i].channel + "]" + "</div>";  
   }
+  this.el.innerHTML = html;
 };
 
 PatternView.prototype.removePattern = function (patternNumber) {
@@ -29,7 +110,7 @@ var PatternSequencer = function (el, options) {
   this.ctx = el.getContext("2d");
   this.patternN = options.patternN;
   this.songLen = options.songLen;
-  this.patternH = 24;
+  this.patternH = 23;
   this.patternW = 90;
   this.setDimensions();
 
@@ -132,11 +213,17 @@ PatternSequencer.prototype._render = function () {
           this.ctx.lineTo(left + this.inset, top + height);
           this.ctx.lineTo(left, top + height - this.inset);
           this.ctx.fill();
-
-
         }
       }
   }
+
+  this.ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
+  // Render grid
+  for (var x = 0; x <= this.tw; x += this.patternW) {
+    this.ctx.moveTo(x, 0);
+    this.ctx.lineTo(x, this.th);
+  }
+  this.ctx.stroke();
 };
 
 PatternSequencer.prototype.render = function () {
@@ -145,6 +232,9 @@ PatternSequencer.prototype.render = function () {
 
 var psElement = document.querySelector(".pattern-sequencer");
 var ps = new PatternSequencer (psElement, {
-                                  songLen: 32,
-                                  patternN: 16
-                                });
+  songLen: 32,
+  patternN: 16
+});
+
+var patternListElement = document.querySelector(".pattern-list");
+var pv = new PatternView (patternListElement);

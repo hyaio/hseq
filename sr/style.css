@@ -28,6 +28,12 @@ label {
   top: 59px;
 }
 
+.pattern-list div {
+  color: whitesmoke;
+  font-family: 'Exo 2', sans-serif;
+  height: 23px;
+}
+
 canvas {
   margin-left: 160px;
 }
