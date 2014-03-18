@@ -116,6 +116,7 @@ var PatternSequencer = function (el, options) {
   this.songLen = options.songLen;
   this.patternH = 23;
   this.patternW = 90;
+  this.timeTrackH = 18;
   this.setDimensions();
 
   this.inset = 2;
@@ -145,6 +146,10 @@ PatternSequencer.prototype.setPatternNumber = function (patternN) {
 };
 
 PatternSequencer.prototype.getPatternPosFromEvent = function (e) {
+  // Avoid clicks on the time tracker
+  if (e.offsetY >= (this.th - this.timeTrackH)) {
+    return null;
+  }
   var position = Math.floor(e.offsetX / this.patternW);
   var pattern = Math.floor(e.offsetY / this.patternH);
   return {
@@ -155,7 +160,7 @@ PatternSequencer.prototype.getPatternPosFromEvent = function (e) {
 
 PatternSequencer.prototype.setDimensions = function () {
   this.tw = this.el.width = this.songLen * this.patternW;
-  this.th = this.el.height = this.patternN * this.patternH;
+  this.th = this.el.height = this.patternN * this.patternH + this.timeTrackH;
 };
 
 PatternSequencer.prototype.setState = function (x,y,val) {
@@ -183,6 +188,9 @@ PatternSequencer.prototype.flipState = function (x,y) {
 
 PatternSequencer.prototype.downHandler = function (e) {
   var patternPos = this.getPatternPosFromEvent(e);
+  if (!patternPos) {
+    return;
+  }
   this.flipState (patternPos.position, patternPos.pattern);
   this.render();
 };
@@ -190,7 +198,10 @@ PatternSequencer.prototype.downHandler = function (e) {
 PatternSequencer.prototype._render = function () {
 
   this.ctx.fillStyle = 'rgb(20,20,20)';
-  this.ctx.fillRect(0, 0, this.tw, this.th);
+  this.ctx.fillRect(0, 0, this.tw, this.th - this.timeTrackH);
+
+  this.ctx.fillStyle = 'rgb(0,0,0)';
+  this.ctx.fillRect(0, this.th - this.timeTrackH, this.tw, this.th);
 
   this.ctx.fillStyle = '#80A500';
 
@@ -223,11 +234,19 @@ PatternSequencer.prototype._render = function () {
   }
 
   this.ctx.strokeStyle = 'rgb(45, 45, 45)';
-  // Render grid
+  this.ctx.fillStyle = 'rgb(200, 200, 200)'
+  // Render grid and text
   this.ctx.beginPath();
+  var txt = 0;
   for (var x = 0; x <= this.tw; x += this.patternW) {
+    // grid
     this.ctx.moveTo(x, 0);
     this.ctx.lineTo(x, this.th);
+
+    // text
+    this.ctx.font = "12px 'Exo 2'";
+    this.ctx.fillText(txt, x + 5, this.th - 5);
+    txt +=1;
   }
   this.ctx.stroke();
 };

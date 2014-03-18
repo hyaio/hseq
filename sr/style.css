@@ -66,9 +66,7 @@ canvas {
   margin-left: 160px;
 }
 
-.time-indicator {
-  margin-left: 160px;
-  color: whitesmoke;
+.control-bar {
   height: 34px;
 }
 
