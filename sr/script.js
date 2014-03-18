@@ -192,7 +192,7 @@ PatternSequencer.prototype._render = function () {
   this.ctx.fillStyle = 'rgb(20,20,20)';
   this.ctx.fillRect(0, 0, this.tw, this.th);
 
-  this.ctx.fillStyle = '#80C5FF';
+  this.ctx.fillStyle = '#80A500';
 
   for (var i = 0; i < this.data.length; i += 1) {
     if (i > this.songLen || !this.data[i]) continue;
@@ -217,12 +217,14 @@ PatternSequencer.prototype._render = function () {
           this.ctx.lineTo(left + this.inset, top + height);
           this.ctx.lineTo(left, top + height - this.inset);
           this.ctx.fill();
+          this.ctx.closePath();
         }
       }
   }
 
-  this.ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
+  this.ctx.strokeStyle = 'rgb(45, 45, 45)';
   // Render grid
+  this.ctx.beginPath();
   for (var x = 0; x <= this.tw; x += this.patternW) {
     this.ctx.moveTo(x, 0);
     this.ctx.lineTo(x, this.th);
