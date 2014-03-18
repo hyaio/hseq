@@ -42,7 +42,7 @@ var PatternView = function (el, options) {
     channel: 1
   },
   {
-    name: "Pattern 6",
+    name: "Pattern Very Long Name Really Really Long But really eh",
     channel: 1
   },
   {
@@ -94,7 +94,7 @@ var PatternView = function (el, options) {
 PatternView.prototype._render = function () {
   var html = "";
   for (var i = 0; i < this.patterns.length; i += 1) {
-    html += "<div class='pattern-item pattern-" + i + "'>" + this.patterns[i].name + " [Ch. " + this.patterns[i].channel + "]" + "</div>";  
+    html += "<div class='pattern-item pattern-" + i + "'><span class='pattern-name'>" + this.patterns[i].name + "</span>" + "<span class='pattern-num'>" + this.patterns[i].channel + "</span>" + "<button class='edit edit-pattern-" + i +"''>Edit..</button>" + "</div>";  
   }
   this.el.innerHTML = html;
 };

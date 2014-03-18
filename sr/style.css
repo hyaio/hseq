@@ -1,3 +1,7 @@
+body {
+  margin: 0;
+}
+
 #container {
   width: 600px;
   height: 460px;
@@ -13,11 +17,13 @@ label {
 
 .pattern-sequencer-container {
     overflow: scroll;
-    height: 400px;;
+    height: 390px;
 }
 
 .inputs {
   border-bottom: 2px solid rgb(70, 70, 70);
+  padding-top: 4px;
+  padding-bottom: 4px;
 }
 
 .pattern-list {
@@ -25,7 +31,7 @@ label {
   width: 156px;
   height: 368px;
   position: absolute;
-  top: 59px;
+  top: 66px;
   overflow: hidden;
 }
 
@@ -37,6 +43,25 @@ label {
   border-bottom: 1px solid rgb(65, 65, 65);
 }
 
+.pattern-list div span.pattern-name {
+  display: block;
+  max-width: 80px;
+  overflow: hidden;
+  white-space: nowrap;
+  background-color: rgb(12, 12, 12);
+  position: relative;
+  top: 4px;
+  left: 6px;
+}
+
+.pattern-list div span.pattern-num {
+  color: rgb(255, 200, 134);
+  border: 0;
+  right: -97px;
+  position: relative;
+  bottom: 11px;
+}
+
 canvas {
   margin-left: 160px;
 }
@@ -45,4 +70,15 @@ canvas {
   margin-left: 160px;
   color: whitesmoke;
   height: 34px;
+}
+
+.edit {
+  background-color: rgb(195, 120, 120);
+  border: 0;
+  position: relative;
+  bottom: 13px;
+  color: whitesmoke;
+  padding: 2px;
+  float: right;
+  right: 4px;
 }
