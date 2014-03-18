@@ -246,7 +246,7 @@ PatternSequencer.prototype._render = function () {
     // text
     this.ctx.font = "12px 'Exo 2'";
     this.ctx.fillText(txt, x + 5, this.th - 5);
-    txt +=1;
+    txt +=2;
   }
   this.ctx.stroke();
 };
