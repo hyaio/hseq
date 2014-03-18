@@ -42,6 +42,10 @@ var PatternView = function (el, options) {
     channel: 1
   },
   {
+    name: "Pattern 6",
+    channel: 1
+  },
+  {
     name: "Pattern 7",
     channel: 1
   },
