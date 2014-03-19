@@ -16,7 +16,8 @@ label {
 }
 
 .pattern-sequencer-container {
-    overflow: scroll;
+    overflow: hidden;
+    overflow-x: scroll;
     height: 390px;
 }
 
