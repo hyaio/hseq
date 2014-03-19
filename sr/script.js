@@ -1,24 +1,3 @@
-var TimeIndicator = function (el, options) {
-  this.el = el;
-  this.ctx = el.getContext("2d");
-  this.patternN = options.patternN;
-  this.songLen = options.songLen;
-  this.patternW = 90;
-  this.el.width = this.patternW * this.songLen;
-  this.el.height = 36;
-  this.render();
-}
-
-TimeIndicator.prototype.render = function () {
-  for (var x = 0; x < this.el.width; x += this.patternW) {
-    this.ctx.moveTo(x, 0);
-    this.ctx.lineTo(x, this.th);
-  }
-  this.ctx.strokeStyle = 'rgba(255, 255, 255, 1)';
-  this.ctx.stroke();
-}
-
-
 var PatternView = function (el, options) {
   this.el = el;
   this.patterns = [{
@@ -129,12 +108,8 @@ var PatternSequencer = function (el, options) {
   
 };
 
-PatternSequencer.prototype.removePattern = function (patternNumber) {
-  // Use slice
-};
-
-PatternSequencer.prototype.addPattern = function () {
-  var patternNumber = this.pattern.length + 1;
+PatternSequencer.prototype.erase = function () {
+  this.data = [[]];
 };
 
 PatternSequencer.prototype.setSongLen = function (len) {

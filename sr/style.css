@@ -101,4 +101,7 @@ input {
 
 .inputs button {
   float: right;
+  position: relative;
+  margin: 0;
+  margin-right: 4px;
 }
