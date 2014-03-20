@@ -18,7 +18,12 @@ label {
 .pattern-sequencer-container {
     overflow: hidden;
     overflow-x: scroll;
-    height: 390px;
+    height: 412px;
+    background-color: rgb(22, 22, 22);
+}
+
+.pattern-sequencer-container::-webkit-scrollbar {
+  -webkit-appearance: none;
 }
 
 .inputs {
@@ -32,7 +37,7 @@ label {
   width: 156px;
   height: 368px;
   position: absolute;
-  top: 66px;
+  top: 45px;
   overflow: hidden;
 }
 
@@ -68,7 +73,7 @@ canvas {
 }
 
 .control-bar {
-  height: 34px;
+  height: 12px;
 }
 
 .edit {

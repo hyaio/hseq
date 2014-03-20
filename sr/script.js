@@ -95,7 +95,7 @@ var PatternSequencer = function (el, options) {
   this.songLen = options.songLen;
   this.patternH = 23;
   this.patternW = 90;
-  this.timeTrackH = 18;
+  this.timeTrackH = 22;
   this.setDimensions();
 
   this.inset = 2;
