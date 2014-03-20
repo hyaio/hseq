@@ -1,19 +1,120 @@
 body {
   margin: 0;
+  -webkit-user-select: none;  /* Chrome all / Safari all */
+  -moz-user-select: none;     /* Firefox all */
+  -ms-user-select: none;
+  user-select: none;
 }
 
 #container {
+  width: 580px;
+  height:300px;
+  background-color: black;
+}
+
+#pattern-sequencer-main-div {
   width: 600px;
   height: 460px;
   background-color: black;
   position: absolute;
 }
+
+#interface {
+  position: relative;
+  width: 600px;
+  height:300px;
+  overflow: auto;
+  background-color: black;
+  border-bottom: 2px solid rgb(66, 65, 65);
+}
+
+#piano {
+  position: absolute;
+  left: 0;
+  width: 80px;
+  height: 1500px;
+  overflow: auto;
+  background-color: black;
+}
+
+#sheet {
+  position: absolute;
+  left: 80px;
+  width: 500px;
+  height: 1500px;
+  overflow: hidden;
+  background-color: white;
+}
+
+#controls {
+  position: absolute;
+  top: 12px;
+  left: 80px;
+  width: 500px;
+  height: 100px;
+  background-color: black;
+}
+
+#control-div {
+  position: absolute;
+  left: 0;
+  width: 80px;
+  background-color: black;
+  height: 100px;
+  padding-top: 8px;
+}
+
+#plugin-container {
+  background: black;
+  width: 600px;
+  height: 460px;
+}
+
 label {
   color: white;
   font-family: 'Exo 2', sans-serif;
   font-weight: 300;
   margin: 5px;
 }
+
+input {
+  color: white;
+  /*background-color: #7C7C7C;
+  border: solid 1px #7C7C7C;*/
+}
+
+select {
+  padding: 5px;
+  font-size: 12px;
+  border-radius: 0;
+  -webkit-appearance: none;
+}
+
+#control-selector {
+  width: 80%;
+  margin-top: 8px;
+  margin-left: 8%;
+}
+
+.reset-button {
+  width: 80%;
+  margin-top: 2px;
+  margin-left: 8%;
+  height: 32px;
+  background-color: firebrick;
+  border-color: firebrick;
+  color: white;
+  font-family: "Exo 2";
+  font-size: 14px;
+  margin-top: 20px;
+}
+
+.inputs {
+  border-bottom: 2px solid rgb(70, 70, 70);
+}
+
+
+/*sr css*/
 
 .pattern-sequencer-container {
     overflow: hidden;
@@ -68,7 +169,7 @@ label {
   bottom: 11px;
 }
 
-canvas {
+.pattern-sequencer-container canvas {
   margin-left: 160px;
 }
 
