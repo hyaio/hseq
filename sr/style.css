@@ -48,7 +48,7 @@ body {
 
 #controls {
   position: absolute;
-  top: 12px;
+  top: 8px;
   left: 80px;
   width: 500px;
   height: 100px;
@@ -98,7 +98,6 @@ select {
 
 .reset-button {
   width: 80%;
-  margin-top: 2px;
   margin-left: 8%;
   height: 32px;
   background-color: firebrick;
@@ -106,13 +105,17 @@ select {
   color: white;
   font-family: "Exo 2";
   font-size: 14px;
-  margin-top: 20px;
+  margin-top: 10px;
 }
 
 .inputs {
   border-bottom: 2px solid rgb(70, 70, 70);
 }
 
+#pattern-sequencer-main-div .inputs {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
 
 /*sr css*/
 
@@ -126,12 +129,6 @@ select {
 /*.pattern-sequencer-container::-webkit-scrollbar {
   -webkit-appearance: none;
 }*/
-
-.inputs {
-  border-bottom: 2px solid rgb(70, 70, 70);
-  padding-top: 4px;
-  padding-bottom: 4px;
-}
 
 .pattern-list {
   background-color: rgb(34, 33, 33);
@@ -202,7 +199,7 @@ select {
   font-size: 14px;
 }
 
-input {
+#pattern-sequencer-main-div input {
   width: 5%;
 }
 
