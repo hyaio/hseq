@@ -641,7 +641,12 @@ var PatternView = function (el, options) {
 
 PatternView.prototype._downHandlerDelegator = function (e) {
   console.log ("Down on the list", e);
-  this.patternButtonCallback();
+  if(e.target && e.target.nodeName == "BUTTON") {
+    // TODO maybe loop over the classes and use indexof to see if it's the right class
+    // e.target.classList[1].regex = ["3"], for instance.
+    var patternNum = parseInt(e.target.classList[1].match(/\d+/g)[0]);
+    this.patternButtonCallback(patternNum);
+  }
 };
 
 PatternView.prototype._render = function () {
