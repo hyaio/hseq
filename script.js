@@ -643,6 +643,7 @@ PatternView.prototype._downHandlerDelegator = function (e) {
   console.log ("Down on the list", e);
   if(e.target && e.target.nodeName == "BUTTON") {
     // TODO maybe loop over the classes and use indexof to see if it's the right class
+    // TODO TODO TODO dataset API http://davidwalsh.name/element-dataset
     // e.target.classList[1].regex = ["3"], for instance.
     var patternNum = parseInt(e.target.classList[1].match(/\d+/g)[0]);
     this.patternButtonCallback(patternNum);
@@ -765,13 +766,11 @@ PatternSequencer.prototype._render = function () {
       for (var k = 0; k < this.data[i].length; k+=1) {
         if (k > this.patternN) continue;
         if (this.getState(i,k)) {
-          //draw
-          console.log ("Drawing",i,k);
+          //Draw
           var left = i * this.patternW;
           var width = this.patternW - 1;
           var top = k * this.patternH;
           var height = this.patternH - 1;
-          //this.ctx.fillRect(left, top, width, height);
 
           this.ctx.beginPath();
           this.ctx.moveTo(left, top + this.inset);
