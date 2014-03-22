@@ -64,7 +64,7 @@ body {
   padding-top: 8px;
 }
 
-#plugin-container {
+#pattern-editor-container {
   background: black;
   width: 600px;
   height: 460px;
@@ -208,4 +208,8 @@ select {
   position: relative;
   margin: 0;
   margin-right: 4px;
+}
+
+.hidden {
+  display: none;
 }

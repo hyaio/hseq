@@ -7,7 +7,24 @@
   </head>
 
   <body>
-    <div id="plugin-container">
+
+  <div id="pattern-sequencer-main-div">
+      <div class="inputs">
+        <label for="song-length">Song length (bars)</label>
+        <input id="song-length"/>
+        <label for="bpm">BPM</label>
+        <input id="bpm"/>
+        <button class="red-button">Play &#9654;</button>
+      </div>
+      <div class="control-bar">
+      </div>
+      <div class="pattern-sequencer-container">
+        <div class="pattern-list"></div>
+        <canvas class="pattern-sequencer"></canvas>
+      </div>
+    </div>
+
+    <div id="pattern-editor-container" class="hidden">
       <div class="inputs">
 
       <label for="pattern-name">Pattern</label>
