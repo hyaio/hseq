@@ -487,7 +487,7 @@ var ControlView = function (el) {
   this.ctx = el.getContext("2d");
   this.down = false;
 
-  this.controlModel = new ControlModel();
+  this.controlModel = null;
 
   this.step = this.tw / 32;
 
@@ -501,7 +501,9 @@ var ControlView = function (el) {
   el.addEventListener("mousemove", this.boundMoveHandler);
   el.addEventListener("mouseup", this.boundUpHandler);
 
-  this.render();
+  if (this.controlModel) {
+    this.render();
+  }
 
 };
 
@@ -567,6 +569,11 @@ ControlView.prototype.setCurrent = function (current) {
 
 ControlView.prototype.resetCurrent = function (current) {
   this.controlModel.reset();
+  this.render();
+}
+
+ControlView.prototype.setControlModel = function (cm) {
+  this.controlModel = cm;
   this.render();
 }
 
@@ -762,81 +769,97 @@ var patternList = [{
     name: "Pattern 1",
     channel: 1,
     strip: new Strip(),
+    controls: new ControlModel()
   },
   {
     name: "Pattern 2",
     channel: 1,
-    strip: new Strip()
+    strip: new Strip(),
+    controls: new ControlModel()
   },
   {
     name: "Pattern 3",
     channel: 1,
-    strip: new Strip()
+    strip: new Strip(),
+    controls: new ControlModel()
   },
   {
     name: "Pattern 4",
     channel: 1,
-    strip: new Strip()
+    strip: new Strip(),
+    controls: new ControlModel()
   },
   {
     name: "Pattern 5",
     channel: 1,
-    strip: new Strip()
+    strip: new Strip(),
+    controls: new ControlModel()
   },
   {
     name: "Pattern 6",
     channel: 1,
-    strip: new Strip()
+    strip: new Strip(),
+    controls: new ControlModel()
   },
   {
     name: "Pattern 7",
     channel: 1,
-    strip: new Strip()
+    strip: new Strip(),
+    controls: new ControlModel()
   },
   {
     name: "Pattern 8",
     channel: 1,
-    strip: new Strip()
+    strip: new Strip(),
+    controls: new ControlModel()
   },
   {
     name: "Pattern 9",
     channel: 1,
-    strip: new Strip()
+    strip: new Strip(),
+    controls: new ControlModel()
   },
   {
     name: "Pattern 10",
     channel: 1,
-    strip: new Strip()
+    strip: new Strip(),
+    controls: new ControlModel()
   },
   {
     name: "Pattern 11",
     channel: 1,
-    strip: new Strip()
+    strip: new Strip(),
+    controls: new ControlModel()
   },
   {
     name: "Pattern 12",
     channel: 1,
-    strip: new Strip()
+    strip: new Strip(),
+    controls: new ControlModel()
   },
   {
     name: "Pattern 13",
     channel: 1,
-    strip: new Strip()
+    strip: new Strip(),
+    controls: new ControlModel()
   },
   {
     name: "Pattern 14",
     channel: 1,
-    strip: new Strip()
+    strip: new Strip(),
+    controls: new ControlModel()
   },
   {
     name: "Pattern 15",
     channel: 1,
-    strip: new Strip()
+    strip: new Strip(),
+    controls: new ControlModel()
   },
   {
     name: "Pattern 16",
     channel: 1,
-    strip: new Strip()
+    strip: new Strip(),
+    controls: new ControlModel()
   }
   ];
 
@@ -874,6 +897,8 @@ var pv = new PatternView (patternListElement, {
     console.log ("patternButtonCallback comes back with ", pattern);
     var patternObj = pv.getPattern(pattern);
     rollView.setStrip (patternObj.strip);
+    // TODO CHANGE ALSO THE value of the controlSelector to reflect the controlModel update
+    controlView.setControlModel (patternObj.controls);
     patternMainLabel.innerHTML = patternObj.name;
     patternSequencerDiv.classList.add("hidden");
     patternEditorDiv.classList.remove("hidden");
