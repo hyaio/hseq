@@ -479,6 +479,9 @@ ControlModel.prototype.setCurrent = function (current) {
     this.controlData[current] = [];
   }
 };
+ControlModel.prototype.getCurrent = function () {
+  return this.current;
+};
 
 var ControlView = function (el) {
   this.el = el;
@@ -894,12 +897,15 @@ var ps = new PatternSequencer (psElement, {
 var patternListElement = document.querySelector(".pattern-list");
 var pv = new PatternView (patternListElement, {
   patternButtonCallback: function (pattern) {
-    console.log ("patternButtonCallback comes back with ", pattern);
+    
     var patternObj = pv.getPattern(pattern);
     rollView.setStrip (patternObj.strip);
-    // TODO CHANGE ALSO THE value of the controlSelector to reflect the controlModel update
+    
     controlView.setControlModel (patternObj.controls);
+    controlSelector.value = patternObj.controls.getCurrent();
+
     patternMainLabel.innerHTML = patternObj.name;
+
     patternSequencerDiv.classList.add("hidden");
     patternEditorDiv.classList.remove("hidden");
   },
