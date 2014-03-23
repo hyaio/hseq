@@ -1,3 +1,4 @@
+// PATTERN EDITOR
 var SEMIBREVE = 4, // (bar)
     MINIMA = 2, // (half bar)
     SEMIMINIMA = 1, // (quarter bar)
@@ -142,7 +143,8 @@ Strip.prototype.getNoteAtPosition = function (time, number) {
 };
 
 // VIEW
-var RollView = function (el) {
+var RollView = function (el, strip) {
+  this.name = "";
   this.el = el;
   this.tw = el.width;
   this.th = el.height;
@@ -151,12 +153,11 @@ var RollView = function (el) {
   this.step = CROMA;
   this.defaultDuration = SEMIMINIMA;
   this.delta = null;
-  this.mode = "EDIT" /* "ADD", "REMOVE" */;
   this.resizing = false;
   this.moving = false;
   this._renderBound = this._render.bind(this);
 
-  this.strip = new Strip();
+  this.strip = strip;
   this.noteHeight = Math.round(this.th / (5 * 12));
   this.noteWidth = this.tw / 8;
   this.boundDownHandler = this.downHandler.bind(this);
@@ -169,8 +170,15 @@ var RollView = function (el) {
   el.addEventListener("mouseup", this.boundUpHandler);
   el.addEventListener("dblclick", this.boundDblHandler);
 
-  this.render();
+  if (this.strip) {
+    this.render();
+  }
 
+};
+
+RollView.prototype.setStrip = function (strip) {
+  this.strip = strip;
+  this.render();
 };
 
 RollView.prototype.setStep = function (step) {
@@ -444,22 +452,36 @@ var PianoView = function (el, minOct, octaves) {
   }
 
 }
-
 var ControlModel = function () {
-  this.data = [];
-}
+  this.controlData = {
+    "cc21": []
+  };
+  this.current = "cc21";
+};
 ControlModel.prototype.getData = function () {
-  return this.data;
-}
+  return this.controlData[this.current];
+};
 ControlModel.prototype.setData = function (data) {
-  this.data = data;
-}
+  this.controlData[this.current] = data;
+};
 ControlModel.prototype.getValue = function (index) {
-  return this.data[index];
-}
+  return this.controlData[this.current][index];
+};
 ControlModel.prototype.setValue = function (index, value) {
-  this.data[index] = value;
-}
+  this.controlData[this.current][index] = value;
+};
+ControlModel.prototype.reset = function () {
+  this.controlData[this.current] = [];
+};
+ControlModel.prototype.setCurrent = function (current) {
+  this.current = current;
+  if (!this.controlData[current]) {
+    this.controlData[current] = [];
+  }
+};
+ControlModel.prototype.getCurrent = function () {
+  return this.current;
+};
 
 var ControlView = function (el) {
   this.el = el;
@@ -468,18 +490,7 @@ var ControlView = function (el) {
   this.ctx = el.getContext("2d");
   this.down = false;
 
-  this.controlData = {
-    "cc21": new ControlModel(),
-    "cc22": new ControlModel(),
-    "cc23": new ControlModel(),
-    "cc24": new ControlModel(),
-    "cc25": new ControlModel(),
-    "cc26": new ControlModel(),
-    "cc27": new ControlModel(),
-    "cc28": new ControlModel(),
-  };
-
-  this.currentController = "cc21";
+  this.controlModel = null;
 
   this.step = this.tw / 32;
 
@@ -493,7 +504,9 @@ var ControlView = function (el) {
   el.addEventListener("mousemove", this.boundMoveHandler);
   el.addEventListener("mouseup", this.boundUpHandler);
 
-  this.render();
+  if (this.controlModel) {
+    this.render();
+  }
 
 };
 
@@ -510,7 +523,7 @@ ControlView.prototype._render = function () {
 
   this.ctx.fillStyle = '#80C5FF';
 
-  var data = this.controlData[this.currentController].getData();
+  var data = this.controlModel.getData();
 
   for (var i = 0; i < data.length; i += 1) {
     value = data[i];
@@ -530,7 +543,7 @@ ControlView.prototype._calculate = function (e) {
   var bin = Math.floor (e.offsetX / this.step);
   var value = Math.round(((this.th - e.offsetY) / this.th) * 127);
 
-  this.controlData[this.currentController].setValue (bin, value);
+  this.controlModel.setValue (bin, value);
 
 }
 
@@ -553,11 +566,353 @@ ControlView.prototype.moveHandler = function (e) {
 };
 
 ControlView.prototype.setCurrent = function (current) {
-  this.currentController = current;
+  this.controlModel.setCurrent(current);
   this.render();
 }
 
+ControlView.prototype.resetCurrent = function (current) {
+  this.controlModel.reset();
+  this.render();
+}
+
+ControlView.prototype.setControlModel = function (cm) {
+  this.controlModel = cm;
+  this.render();
+}
+
+// SEQUENCER
+
+var PatternView = function (el, options) {
+  this.el = el;
+  this.patternButtonCallback = options.patternButtonCallback;
+  this.patterns = options.patterns;
+
+  this._render();
+
+  this.boundDownHandlerDelegator = this._downHandlerDelegator.bind(this);
+  el.addEventListener("mousedown", this.boundDownHandlerDelegator);
+
+};
+
+PatternView.prototype.getPattern = function (pattern) {
+  return this.patterns[pattern];
+}
+
+PatternView.prototype._downHandlerDelegator = function (e) {
+  if(e.target && e.target.nodeName == "BUTTON") {
+    // TODO maybe loop over the classes and use indexof to see if it's the right class
+    // TODO TODO TODO dataset API http://davidwalsh.name/element-dataset
+    // e.target.classList[1].regex = ["3"], for instance.
+    var patternNum = parseInt(e.target.classList[1].match(/\d+/g)[0]);
+    this.patternButtonCallback(patternNum);
+  }
+};
+
+PatternView.prototype._render = function () {
+
+  var html = "";
+  for (var i = 0; i < this.patterns.length; i += 1) {
+    html += "<div class='pattern-item pattern-" + i + "'><span class='pattern-name'>" + this.patterns[i].name + "</span>" + "<span class='pattern-num'>" + this.patterns[i].channel + "</span>" + "<button class='edit edit-pattern-" + i +"''>Edit..</button>" + "</div>";  
+  }
+  this.el.innerHTML = html;
+};
+
+PatternView.prototype.removePattern = function (patternNumber) {
+  // Use slice
+};
+
+PatternView.prototype.addPattern = function () {
+  var patternNumber = this.pattern.length + 1;
+};
+
+var PatternSequencer = function (el, options) {
+  
+  this.data = [[]];
+  this.el = el;
+  this.ctx = el.getContext("2d");
+  this.patternN = options.patternN;
+  this.songLen = options.songLen;
+  this.patternH = 23;
+  this.patternW = 90;
+  this.timeTrackH = 22;
+  this.setDimensions();
+
+  this.inset = 2;
+  
+  this._renderBound = this._render.bind(this);
+  this.boundDownHandler = this.downHandler.bind(this);
+  el.addEventListener("mousedown", this.boundDownHandler);
+
+  this.render();
+  
+};
+
+PatternSequencer.prototype.erase = function () {
+  this.data = [[]];
+};
+
+PatternSequencer.prototype.setSongLen = function (len) {
+  this.songLen = len;
+};
+
+PatternSequencer.prototype.setPatternNumber = function (patternN) {
+  this.patternN = patternN;
+};
+
+PatternSequencer.prototype.getPatternPosFromEvent = function (e) {
+  // Avoid clicks on the time tracker
+  if (e.offsetY >= (this.th - this.timeTrackH)) {
+    return null;
+  }
+  var position = Math.floor(e.offsetX / this.patternW);
+  var pattern = Math.floor(e.offsetY / this.patternH);
+  return {
+    pattern: pattern,
+    position: position,
+  };
+};
+
+PatternSequencer.prototype.setDimensions = function () {
+  this.tw = this.el.width = this.songLen * this.patternW;
+  this.th = this.el.height = this.patternN * this.patternH + this.timeTrackH;
+};
+
+PatternSequencer.prototype.setState = function (x,y,val) {
+  if (typeof this.data[x] == "undefined") {
+    this.data[x] = [];
+  }
+  this.data[x][y] = val;
+};
+
+PatternSequencer.prototype.getState = function (x,y,val) {
+  if (typeof this.data[x] == "undefined") {
+    return undefined;
+  }
+  return this.data[x][y];
+};
+
+PatternSequencer.prototype.flipState = function (x,y) {
+  if (!this.getState(x, y)) {
+    this.setState(x, y, true);
+  }
+  else {
+    this.setState(x, y, undefined);
+  }
+};
+
+PatternSequencer.prototype.downHandler = function (e) {
+  var patternPos = this.getPatternPosFromEvent(e);
+  if (!patternPos) {
+    return;
+  }
+  this.flipState (patternPos.position, patternPos.pattern);
+  this.render();
+};
+
+PatternSequencer.prototype._render = function () {
+
+  this.ctx.fillStyle = 'rgb(20,20,20)';
+  this.ctx.fillRect(0, 0, this.tw, this.th - this.timeTrackH);
+
+  this.ctx.fillStyle = 'rgb(0,0,0)';
+  this.ctx.fillRect(0, this.th - this.timeTrackH, this.tw, this.th);
+
+  this.ctx.fillStyle = '#80A500';
+
+  for (var i = 0; i < this.data.length; i += 1) {
+    if (i > this.songLen || !this.data[i]) continue;
+      for (var k = 0; k < this.data[i].length; k+=1) {
+        if (k > this.patternN) continue;
+        if (this.getState(i,k)) {
+          //Draw
+          var left = i * this.patternW;
+          var width = this.patternW - 1;
+          var top = k * this.patternH;
+          var height = this.patternH - 1;
+
+          this.ctx.beginPath();
+          this.ctx.moveTo(left, top + this.inset);
+          this.ctx.lineTo(left + this.inset, top);
+          this.ctx.lineTo(left + width - this.inset, top);
+          this.ctx.lineTo(left + width, top + this.inset);
+          this.ctx.lineTo(left + width, top + height - this.inset);
+          this.ctx.lineTo(left + width - this.inset, top + height);
+          this.ctx.lineTo(left + this.inset, top + height);
+          this.ctx.lineTo(left, top + height - this.inset);
+          this.ctx.fill();
+          this.ctx.closePath();
+        }
+      }
+  }
+
+  this.ctx.strokeStyle = 'rgb(45, 45, 45)';
+  this.ctx.fillStyle = 'rgb(200, 200, 200)'
+  // Render grid and text
+  this.ctx.beginPath();
+  var txt = 0;
+  for (var x = 0; x <= this.tw; x += this.patternW) {
+    // grid
+    this.ctx.moveTo(x, 0);
+    this.ctx.lineTo(x, this.th);
+
+    // text
+    this.ctx.font = "12px 'Exo 2'";
+    this.ctx.fillText(txt, x + 5, this.th - 5);
+    txt +=2;
+  }
+  this.ctx.stroke();
+};
+
+PatternSequencer.prototype.render = function () {
+  window.requestAnimationFrame(this._renderBound);
+};
+
 // INIT
+var patternList = [{
+    name: "Pattern 1",
+    channel: 1,
+    strip: new Strip(),
+    controls: new ControlModel()
+  },
+  {
+    name: "Pattern 2",
+    channel: 1,
+    strip: new Strip(),
+    controls: new ControlModel()
+  },
+  {
+    name: "Pattern 3",
+    channel: 1,
+    strip: new Strip(),
+    controls: new ControlModel()
+  },
+  {
+    name: "Pattern 4",
+    channel: 1,
+    strip: new Strip(),
+    controls: new ControlModel()
+  },
+  {
+    name: "Pattern 5",
+    channel: 1,
+    strip: new Strip(),
+    controls: new ControlModel()
+  },
+  {
+    name: "Pattern 6",
+    channel: 1,
+    strip: new Strip(),
+    controls: new ControlModel()
+  },
+  {
+    name: "Pattern 7",
+    channel: 1,
+    strip: new Strip(),
+    controls: new ControlModel()
+  },
+  {
+    name: "Pattern 8",
+    channel: 1,
+    strip: new Strip(),
+    controls: new ControlModel()
+  },
+  {
+    name: "Pattern 9",
+    channel: 1,
+    strip: new Strip(),
+    controls: new ControlModel()
+  },
+  {
+    name: "Pattern 10",
+    channel: 1,
+    strip: new Strip(),
+    controls: new ControlModel()
+  },
+  {
+    name: "Pattern 11",
+    channel: 1,
+    strip: new Strip(),
+    controls: new ControlModel()
+  },
+  {
+    name: "Pattern 12",
+    channel: 1,
+    strip: new Strip(),
+    controls: new ControlModel()
+  },
+  {
+    name: "Pattern 13",
+    channel: 1,
+    strip: new Strip(),
+    controls: new ControlModel()
+  },
+  {
+    name: "Pattern 14",
+    channel: 1,
+    strip: new Strip(),
+    controls: new ControlModel()
+  },
+  {
+    name: "Pattern 15",
+    channel: 1,
+    strip: new Strip(),
+    controls: new ControlModel()
+  },
+  {
+    name: "Pattern 16",
+    channel: 1,
+    strip: new Strip(),
+    controls: new ControlModel()
+  }
+  ];
+
+// GET THE CONTAINER ELEMENTS
+var patternSequencerDiv = document.querySelector("#pattern-sequencer-main-div");
+var patternEditorDiv = document.querySelector("#pattern-editor-container");
+var backToSeqButton = document.querySelector(".back-to-seq");
+var patternMainLabel = document.querySelector(".pattern-main-label");
+var resetButton = document.querySelector(".reset-button");
+var controlSelector = document.querySelector("#control-selector");
+
+backToSeqButton.addEventListener("click", function () {
+  patternSequencerDiv.classList.remove("hidden");
+  patternEditorDiv.classList.add("hidden");
+});
+
+resetButton.addEventListener("click", function () {
+  controlView.resetCurrent();
+});
+
+controlSelector.addEventListener("change", function (e) {
+  controlView.setCurrent(e.target.value);
+});
+
+// INIT SEQUENCER
+var psElement = document.querySelector(".pattern-sequencer");
+var ps = new PatternSequencer (psElement, {
+  songLen: 32,
+  patternN: 16
+});
+
+var patternListElement = document.querySelector(".pattern-list");
+var pv = new PatternView (patternListElement, {
+  patternButtonCallback: function (pattern) {
+    
+    var patternObj = pv.getPattern(pattern);
+    rollView.setStrip (patternObj.strip);
+    
+    controlView.setControlModel (patternObj.controls);
+    controlSelector.value = patternObj.controls.getCurrent();
+
+    patternMainLabel.innerHTML = patternObj.name;
+
+    patternSequencerDiv.classList.add("hidden");
+    patternEditorDiv.classList.remove("hidden");
+  },
+  patterns: patternList
+});
+
+// INIT PATTERN EDITOR
 var sheet = document.querySelector("#sheet");
 var snapMenu = document.querySelector("#snap");
 var durationMenu = document.querySelector("#newnote");

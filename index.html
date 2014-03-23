@@ -7,11 +7,27 @@
   </head>
 
   <body>
-    <div id="plugin-container">
+
+  <div id="pattern-sequencer-main-div">
+      <div class="inputs">
+        <label for="song-length">Song length (bars)</label>
+        <input id="song-length"/>
+        <label for="bpm">BPM</label>
+        <input id="bpm"/>
+        <button class="red-button">Play &#9654;</button>
+      </div>
+      <div class="control-bar">
+      </div>
+      <div class="pattern-sequencer-container">
+        <div class="pattern-list"></div>
+        <canvas class="pattern-sequencer"></canvas>
+      </div>
+    </div>
+
+    <div id="pattern-editor-container" class="hidden">
       <div class="inputs">
 
-      <label for="pattern-name">Pattern</label>
-        <input name="pattern-name" id="pattern-name"></input>
+      <label class="pattern-main-label">Pattern</label>
 
         <label for="snap">Grid snap</label>
         <select name="snap" id="snap">
@@ -52,6 +68,9 @@
           <option value="15">15</option>
           <option value="16">16</option> 
         </select>
+
+        <button class="back-to-seq red-button">Back</button>
+
       </div>
 
       <div id="container">
@@ -62,11 +81,11 @@
         <div id="control-div">
           <label for="control-selector">MIDI Ctrl</label>
           <select name="control-selector" id="control-selector">
-            <option value="CC21" selected>CC-21</option> 
-            <option value="CC22">CC-22</option>
-            <option value="CC23">CC-23</option>
-            <option value="CC24">CC-24</option>
-            <option value="CC25">CC-25</option>
+            <option value="cc21" selected>CC-21</option> 
+            <option value="cc22">CC-22</option>
+            <option value="cc23">CC-23</option>
+            <option value="cc24">CC-24</option>
+            <option value="cc25">CC-25</option>
           </select>
           <button class="reset-button">Reset</button>
           <canvas width="500" height="100" id="controls"></canvas>  
