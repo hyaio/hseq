@@ -849,6 +849,7 @@ var patternEditorDiv = document.querySelector("#pattern-editor-container");
 var backToSeqButton = document.querySelector(".back-to-seq");
 var patternMainLabel = document.querySelector(".pattern-main-label");
 var resetButton = document.querySelector(".reset-button");
+var controlSelector = document.querySelector("#control-selector");
 
 backToSeqButton.addEventListener("click", function () {
   patternSequencerDiv.classList.remove("hidden");
@@ -857,6 +858,10 @@ backToSeqButton.addEventListener("click", function () {
 
 resetButton.addEventListener("click", function () {
   controlView.resetCurrent();
+});
+
+controlSelector.addEventListener("change", function (e) {
+  controlView.setCurrent(e.target.value);
 });
 
 // INIT SEQUENCER
