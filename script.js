@@ -144,7 +144,8 @@ Strip.prototype.getNoteAtPosition = function (time, number) {
 };
 
 // VIEW
-var RollView = function (el) {
+var RollView = function (el, strip) {
+  this.name = "";
   this.el = el;
   this.tw = el.width;
   this.th = el.height;
@@ -158,7 +159,7 @@ var RollView = function (el) {
   this.moving = false;
   this._renderBound = this._render.bind(this);
 
-  this.strip = new Strip();
+  this.strip = strip;
   this.noteHeight = Math.round(this.th / (5 * 12));
   this.noteWidth = this.tw / 8;
   this.boundDownHandler = this.downHandler.bind(this);
@@ -171,8 +172,15 @@ var RollView = function (el) {
   el.addEventListener("mouseup", this.boundUpHandler);
   el.addEventListener("dblclick", this.boundDblHandler);
 
-  this.render();
+  if (this.strip) {
+    this.render();
+  }
 
+};
+
+RollView.prototype.setStrip = function (strip) {
+  this.strip = strip;
+  this.render();
 };
 
 RollView.prototype.setStep = function (step) {
@@ -568,67 +576,83 @@ var PatternView = function (el, options) {
 
   this.patterns = [{
     name: "Pattern 1",
-    channel: 1
+    channel: 1,
+    strip: new Strip()
   },
   {
     name: "Pattern 2",
-    channel: 1
+    channel: 1,
+    strip: new Strip()
   },
   {
     name: "Pattern 3",
-    channel: 1
+    channel: 1,
+    strip: new Strip()
   },
   {
     name: "Pattern 4",
-    channel: 1
+    channel: 1,
+    strip: new Strip()
   },
   {
     name: "Pattern 5",
-    channel: 1
+    channel: 1,
+    strip: new Strip()
   },
   {
-    name: "Pattern Very Long Name Really Really Long But really eh",
-    channel: 1
+    name: "Pattern 6",
+    channel: 1,
+    strip: new Strip()
   },
   {
     name: "Pattern 7",
-    channel: 1
+    channel: 1,
+    strip: new Strip()
   },
   {
     name: "Pattern 8",
-    channel: 1
+    channel: 1,
+    strip: new Strip()
   },
   {
     name: "Pattern 9",
-    channel: 1
+    channel: 1,
+    strip: new Strip()
   },
   {
     name: "Pattern 10",
-    channel: 1
+    channel: 1,
+    strip: new Strip()
   },
   {
     name: "Pattern 11",
-    channel: 1
+    channel: 1,
+    strip: new Strip()
   },
   {
     name: "Pattern 12",
-    channel: 1
+    channel: 1,
+    strip: new Strip()
   },
   {
     name: "Pattern 13",
-    channel: 1
+    channel: 1,
+    strip: new Strip()
   },
   {
     name: "Pattern 14",
-    channel: 1
+    channel: 1,
+    strip: new Strip()
   },
   {
     name: "Pattern 15",
-    channel: 1
+    channel: 1,
+    strip: new Strip()
   },
   {
     name: "Pattern 16",
-    channel: 1
+    channel: 1,
+    strip: new Strip()
   }
   ];
 
@@ -637,6 +661,10 @@ var PatternView = function (el, options) {
   this.boundDownHandlerDelegator = this._downHandlerDelegator.bind(this);
   el.addEventListener("mousedown", this.boundDownHandlerDelegator);
 
+};
+
+PatternView.prototype.getPattern = function (pattern) {
+  return this.patterns[pattern];
 }
 
 PatternView.prototype._downHandlerDelegator = function (e) {
@@ -812,6 +840,13 @@ PatternSequencer.prototype.render = function () {
 // GET THE CONTAINER ELEMENTS
 var patternSequencerDiv = document.querySelector("#pattern-sequencer-main-div");
 var patternEditorDiv = document.querySelector("#pattern-editor-container");
+var backToSeqButton = document.querySelector(".back-to-seq");
+
+backToSeqButton.addEventListener("click", function () {
+  console.log ("backToSeqButton clicked!");
+  patternSequencerDiv.classList.remove("hidden");
+  patternEditorDiv.classList.add("hidden");
+});
 
 // INIT SEQUENCER
 var psElement = document.querySelector(".pattern-sequencer");
@@ -824,6 +859,7 @@ var patternListElement = document.querySelector(".pattern-list");
 var pv = new PatternView (patternListElement, {
   patternButtonCallback: function (pattern) {
     console.log ("patternButtonCallback comes back with ", pattern);
+    rollView.setStrip (pv.getPattern(pattern).strip);
     patternSequencerDiv.classList.add("hidden");
     patternEditorDiv.classList.remove("hidden");
   }
