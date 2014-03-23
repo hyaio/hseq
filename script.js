@@ -452,24 +452,32 @@ var PianoView = function (el, minOct, octaves) {
   }
 
 }
-
 var ControlModel = function () {
-  this.data = [];
+  this.controlData = {
+    "cc21": []
+  };
+  this.current = "cc21";
 };
 ControlModel.prototype.getData = function () {
-  return this.data;
+  return this.controlData[this.current];
 };
 ControlModel.prototype.setData = function (data) {
-  this.data = data;
+  this.controlData[this.current] = data;
 };
 ControlModel.prototype.getValue = function (index) {
-  return this.data[index];
+  return this.controlData[this.current][index];
 };
 ControlModel.prototype.setValue = function (index, value) {
-  this.data[index] = value;
+  this.controlData[this.current][index] = value;
 };
 ControlModel.prototype.reset = function () {
-  this.data = [];
+  this.controlData[this.current] = [];
+};
+ControlModel.prototype.setCurrent = function (current) {
+  this.current = current;
+  if (!this.controlData[current]) {
+    this.controlData[current] = [];
+  }
 };
 
 var ControlView = function (el) {
@@ -479,18 +487,7 @@ var ControlView = function (el) {
   this.ctx = el.getContext("2d");
   this.down = false;
 
-  this.controlData = {
-    "cc21": new ControlModel(),
-    "cc22": new ControlModel(),
-    "cc23": new ControlModel(),
-    "cc24": new ControlModel(),
-    "cc25": new ControlModel(),
-    "cc26": new ControlModel(),
-    "cc27": new ControlModel(),
-    "cc28": new ControlModel(),
-  };
-
-  this.currentController = "cc21";
+  this.controlModel = new ControlModel();
 
   this.step = this.tw / 32;
 
@@ -521,7 +518,7 @@ ControlView.prototype._render = function () {
 
   this.ctx.fillStyle = '#80C5FF';
 
-  var data = this.controlData[this.currentController].getData();
+  var data = this.controlModel.getData();
 
   for (var i = 0; i < data.length; i += 1) {
     value = data[i];
@@ -541,7 +538,7 @@ ControlView.prototype._calculate = function (e) {
   var bin = Math.floor (e.offsetX / this.step);
   var value = Math.round(((this.th - e.offsetY) / this.th) * 127);
 
-  this.controlData[this.currentController].setValue (bin, value);
+  this.controlModel.setValue (bin, value);
 
 }
 
@@ -564,12 +561,12 @@ ControlView.prototype.moveHandler = function (e) {
 };
 
 ControlView.prototype.setCurrent = function (current) {
-  this.currentController = current;
+  this.controlModel.setCurrent(current);
   this.render();
 }
 
 ControlView.prototype.resetCurrent = function (current) {
-  this.controlData[this.currentController].reset();
+  this.controlModel.reset();
   this.render();
 }
 
@@ -764,7 +761,7 @@ PatternSequencer.prototype.render = function () {
 var patternList = [{
     name: "Pattern 1",
     channel: 1,
-    strip: new Strip()
+    strip: new Strip(),
   },
   {
     name: "Pattern 2",
