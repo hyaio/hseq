@@ -1,5 +1,4 @@
 // PATTERN EDITOR
-
 var SEMIBREVE = 4, // (bar)
     MINIMA = 2, // (half bar)
     SEMIMINIMA = 1, // (quarter bar)
@@ -154,7 +153,6 @@ var RollView = function (el, strip) {
   this.step = CROMA;
   this.defaultDuration = SEMIMINIMA;
   this.delta = null;
-  this.mode = "EDIT" /* "ADD", "REMOVE" */;
   this.resizing = false;
   this.moving = false;
   this._renderBound = this._render.bind(this);
@@ -457,19 +455,22 @@ var PianoView = function (el, minOct, octaves) {
 
 var ControlModel = function () {
   this.data = [];
-}
+};
 ControlModel.prototype.getData = function () {
   return this.data;
-}
+};
 ControlModel.prototype.setData = function (data) {
   this.data = data;
-}
+};
 ControlModel.prototype.getValue = function (index) {
   return this.data[index];
-}
+};
 ControlModel.prototype.setValue = function (index, value) {
   this.data[index] = value;
-}
+};
+ControlModel.prototype.reset = function () {
+  this.data = [];
+};
 
 var ControlView = function (el) {
   this.el = el;
@@ -567,94 +568,17 @@ ControlView.prototype.setCurrent = function (current) {
   this.render();
 }
 
+ControlView.prototype.resetCurrent = function (current) {
+  this.controlData[this.currentController].reset();
+  this.render();
+}
 
 // SEQUENCER
 
 var PatternView = function (el, options) {
   this.el = el;
   this.patternButtonCallback = options.patternButtonCallback;
-
-  this.patterns = [{
-    name: "Pattern 1",
-    channel: 1,
-    strip: new Strip()
-  },
-  {
-    name: "Pattern 2",
-    channel: 1,
-    strip: new Strip()
-  },
-  {
-    name: "Pattern 3",
-    channel: 1,
-    strip: new Strip()
-  },
-  {
-    name: "Pattern 4",
-    channel: 1,
-    strip: new Strip()
-  },
-  {
-    name: "Pattern 5",
-    channel: 1,
-    strip: new Strip()
-  },
-  {
-    name: "Pattern 6",
-    channel: 1,
-    strip: new Strip()
-  },
-  {
-    name: "Pattern 7",
-    channel: 1,
-    strip: new Strip()
-  },
-  {
-    name: "Pattern 8",
-    channel: 1,
-    strip: new Strip()
-  },
-  {
-    name: "Pattern 9",
-    channel: 1,
-    strip: new Strip()
-  },
-  {
-    name: "Pattern 10",
-    channel: 1,
-    strip: new Strip()
-  },
-  {
-    name: "Pattern 11",
-    channel: 1,
-    strip: new Strip()
-  },
-  {
-    name: "Pattern 12",
-    channel: 1,
-    strip: new Strip()
-  },
-  {
-    name: "Pattern 13",
-    channel: 1,
-    strip: new Strip()
-  },
-  {
-    name: "Pattern 14",
-    channel: 1,
-    strip: new Strip()
-  },
-  {
-    name: "Pattern 15",
-    channel: 1,
-    strip: new Strip()
-  },
-  {
-    name: "Pattern 16",
-    channel: 1,
-    strip: new Strip()
-  }
-  ];
+  this.patterns = options.patterns;
 
   this._render();
 
@@ -668,7 +592,6 @@ PatternView.prototype.getPattern = function (pattern) {
 }
 
 PatternView.prototype._downHandlerDelegator = function (e) {
-  console.log ("Down on the list", e);
   if(e.target && e.target.nodeName == "BUTTON") {
     // TODO maybe loop over the classes and use indexof to see if it's the right class
     // TODO TODO TODO dataset API http://davidwalsh.name/element-dataset
@@ -837,15 +760,103 @@ PatternSequencer.prototype.render = function () {
   window.requestAnimationFrame(this._renderBound);
 };
 
+// INIT
+var patternList = [{
+    name: "Pattern 1",
+    channel: 1,
+    strip: new Strip()
+  },
+  {
+    name: "Pattern 2",
+    channel: 1,
+    strip: new Strip()
+  },
+  {
+    name: "Pattern 3",
+    channel: 1,
+    strip: new Strip()
+  },
+  {
+    name: "Pattern 4",
+    channel: 1,
+    strip: new Strip()
+  },
+  {
+    name: "Pattern 5",
+    channel: 1,
+    strip: new Strip()
+  },
+  {
+    name: "Pattern 6",
+    channel: 1,
+    strip: new Strip()
+  },
+  {
+    name: "Pattern 7",
+    channel: 1,
+    strip: new Strip()
+  },
+  {
+    name: "Pattern 8",
+    channel: 1,
+    strip: new Strip()
+  },
+  {
+    name: "Pattern 9",
+    channel: 1,
+    strip: new Strip()
+  },
+  {
+    name: "Pattern 10",
+    channel: 1,
+    strip: new Strip()
+  },
+  {
+    name: "Pattern 11",
+    channel: 1,
+    strip: new Strip()
+  },
+  {
+    name: "Pattern 12",
+    channel: 1,
+    strip: new Strip()
+  },
+  {
+    name: "Pattern 13",
+    channel: 1,
+    strip: new Strip()
+  },
+  {
+    name: "Pattern 14",
+    channel: 1,
+    strip: new Strip()
+  },
+  {
+    name: "Pattern 15",
+    channel: 1,
+    strip: new Strip()
+  },
+  {
+    name: "Pattern 16",
+    channel: 1,
+    strip: new Strip()
+  }
+  ];
+
 // GET THE CONTAINER ELEMENTS
 var patternSequencerDiv = document.querySelector("#pattern-sequencer-main-div");
 var patternEditorDiv = document.querySelector("#pattern-editor-container");
 var backToSeqButton = document.querySelector(".back-to-seq");
+var patternMainLabel = document.querySelector(".pattern-main-label");
+var resetButton = document.querySelector(".reset-button");
 
 backToSeqButton.addEventListener("click", function () {
-  console.log ("backToSeqButton clicked!");
   patternSequencerDiv.classList.remove("hidden");
   patternEditorDiv.classList.add("hidden");
+});
+
+resetButton.addEventListener("click", function () {
+  controlView.resetCurrent();
 });
 
 // INIT SEQUENCER
@@ -859,10 +870,13 @@ var patternListElement = document.querySelector(".pattern-list");
 var pv = new PatternView (patternListElement, {
   patternButtonCallback: function (pattern) {
     console.log ("patternButtonCallback comes back with ", pattern);
-    rollView.setStrip (pv.getPattern(pattern).strip);
+    var patternObj = pv.getPattern(pattern);
+    rollView.setStrip (patternObj.strip);
+    patternMainLabel.innerHTML = patternObj.name;
     patternSequencerDiv.classList.add("hidden");
     patternEditorDiv.classList.remove("hidden");
-  }
+  },
+  patterns: patternList
 });
 
 // INIT PATTERN EDITOR
