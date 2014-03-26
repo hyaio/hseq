@@ -1,0 +1,210 @@
+body {
+    margin: 0;
+    -webkit-user-select: none;  /* Chrome all / Safari all */
+    -moz-user-select: none;     /* Firefox all */
+    -ms-user-select: none;
+    user-select: none;
+}
+
+#container {
+    width: 580px;
+    height:300px;
+    background-color: black;
+}
+
+#pattern-sequencer-main-div {
+    width: 600px;
+    height: 460px;
+    background-color: black;
+    position: absolute;
+}
+
+#interface {
+    position: relative;
+    width: 600px;
+    height:300px;
+    overflow: auto;
+    background-color: black;
+    border-bottom: 2px solid rgb(66, 65, 65);
+}
+
+#piano {
+    position: absolute;
+    left: 0;
+    width: 80px;
+    height: 1500px;
+    overflow: auto;
+    background-color: black;
+}
+
+#sheet {
+    position: absolute;
+    left: 80px;
+    width: 500px;
+    height: 1500px;
+    overflow: hidden;
+    background-color: white;
+}
+
+#controls {
+    position: absolute;
+    top: 8px;
+    left: 80px;
+    width: 500px;
+    height: 100px;
+    background-color: black;
+}
+
+#control-div {
+    position: absolute;
+    left: 0;
+    width: 80px;
+    background-color: black;
+    height: 100px;
+    padding-top: 8px;
+}
+
+#pattern-editor-container {
+    background: black;
+    width: 600px;
+    height: 460px;
+}
+
+label {
+    color: white;
+    font-family: 'Exo 2', sans-serif;
+    font-weight: 300;
+    margin: 5px;
+}
+
+input {
+    color: white;
+    /*background-color: #7C7C7C;
+    border: solid 1px #7C7C7C;*/
+}
+
+select {
+    padding: 5px;
+    font-size: 12px;
+    border-radius: 0;
+    -webkit-appearance: none;
+}
+
+#control-selector {
+    width: 80%;
+    margin-top: 8px;
+    margin-left: 8%;
+}
+
+.reset-button {
+    width: 80%;
+    margin-left: 8%;
+    height: 32px;
+    background-color: firebrick;
+    border-color: firebrick;
+    color: white;
+    font-family: "Exo 2";
+    font-size: 14px;
+    margin-top: 10px;
+}
+
+.inputs {
+    border-bottom: 2px solid rgb(70, 70, 70);
+}
+
+#pattern-sequencer-main-div .inputs {
+    padding-top: 4px;
+    padding-bottom: 4px;
+}
+
+/*sr css*/
+
+.pattern-sequencer-container {
+    overflow: hidden;
+    overflow-x: scroll;
+    height: 412px;
+    background-color: rgb(22, 22, 22);
+}
+
+.pattern-list {
+    background-color: rgb(34, 33, 33);
+    width: 156px;
+    height: 368px;
+    position: absolute;
+    top: 48px;
+    overflow: hidden;
+}
+
+.pattern-list div {
+    color: whitesmoke;
+    font-family: 'Exo 2', sans-serif;
+    font-size: 12px;
+    height: 22px;
+    border-bottom: 1px solid rgb(65, 65, 65);
+}
+
+.pattern-list div span.pattern-name {
+    display: block;
+    max-width: 80px;
+    overflow: hidden;
+    white-space: nowrap;
+    background-color: rgb(12, 12, 12);
+    position: relative;
+    top: 4px;
+    left: 6px;
+}
+
+.pattern-list div span.pattern-num {
+    color: rgb(255, 200, 134);
+    border: 0;
+    right: -97px;
+    position: relative;
+    bottom: 11px;
+}
+
+.pattern-sequencer-container canvas {
+    margin-left: 160px;
+}
+
+.control-bar {
+    height: 15px;
+}
+
+.edit {
+    background-color: rgb(195, 120, 120);
+    border: 0;
+    position: relative;
+    bottom: 13px;
+    color: whitesmoke;
+    padding: 2px;
+    float: right;
+    right: 4px;
+}
+
+.erase-button {
+    width: 12%;
+    margin-top: 3px;
+    margin-left: 27%;
+}
+
+.red-button {
+    background-color: firebrick;
+    border-color: firebrick;
+    color: white;
+    font-family: "Exo 2";
+    font-size: 14px;
+}
+
+#pattern-sequencer-main-div input {
+    width: 5%;
+}
+
+.inputs button {
+    float: right;
+    position: relative;
+    margin: 0 4px 0 0;
+}
+
+.hidden {
+    display: none;
+}
