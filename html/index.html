@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link rel="stylesheet" href="style.css">
+    <link href='http://fonts.googleapis.com/css?family=Exo+2:400,200,300' rel='stylesheet' type='text/css'>
+</head>
+
+<body>
+
+<div id="pattern-sequencer-main-div">
+    <div class="inputs">
+        <label for="song-length">Song length (bars)</label>
+        <input id="song-length"/>
+        <label for="bpm">BPM</label>
+        <input id="bpm"/>
+        <button class="red-button">Play &#9654;</button>
+    </div>
+    <div class="control-bar">
+    </div>
+    <div class="pattern-sequencer-container">
+        <div class="pattern-list"></div>
+        <canvas class="pattern-sequencer"></canvas>
+    </div>
+</div>
+
+<div id="pattern-editor-container" class="hidden">
+    <div class="inputs">
+
+        <label class="pattern-main-label">Pattern</label>
+
+        <label for="snap">Grid snap</label>
+        <select name="snap" id="snap">
+            <option value="0">None</option>
+            <option value="0.25">1/16</option>
+            <option value="0.5" selected>1/8</option>
+            <option value="1">1/4</option>
+            <option value="2">1/2</option>
+            <option value="4">1</option>
+        </select>
+
+
+        <label for="newnote">Duration</label>
+        <select name="newnote" id="newnote">
+            <option value="0.25">1/16</option>
+            <option value="0.5">1/8</option>
+            <option value="1" selected>1/4</option>
+            <option value="2">1/2</option>
+            <option value="4">1</option>
+        </select>
+
+        <label for="channel">Channel</label>
+        <select name="channel" id="channel">
+            <option value="1" selected>1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option value="6">6</option>
+            <option value="7">7</option>
+            <option value="8">8</option>
+            <option value="9">9</option>
+            <option value="10">10</option>
+            <option value="11">11</option>
+            <option value="12">12</option>
+            <option value="13">13</option>
+            <option value="14">14</option>
+            <option value="15">15</option>
+            <option value="16">16</option>
+        </select>
+
+        <button class="back-to-seq red-button">Back</button>
+
+    </div>
+
+    <div id="container">
+        <div id="interface">
+            <canvas width="500" height="1500px" id="sheet"></canvas>
+            <canvas width="80" height="1500px" id="piano"></canvas>
+        </div>
+        <div id="control-div">
+            <label for="control-selector">MIDI Ctrl</label>
+            <select name="control-selector" id="control-selector">
+                <option value="cc21" selected>CC-21</option>
+                <option value="cc22">CC-22</option>
+                <option value="cc23">CC-23</option>
+                <option value="cc24">CC-24</option>
+                <option value="cc25">CC-25</option>
+            </select>
+            <button class="reset-button">Reset</button>
+            <canvas width="500" height="100" id="controls"></canvas>
+        </div>
+
+    </div>
+    <!-- container -->
+</div>
+</body>
+
+<script src="script.js"></script>
+
+</html>
