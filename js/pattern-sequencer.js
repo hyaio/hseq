@@ -45,7 +45,7 @@ PatternSequencer.prototype.getPatternPosFromEvent = function (e) {
     var pattern = Math.floor(e.offsetY / this.patternH);
     return {
         pattern: pattern,
-        position: position,
+        position: position
     };
 };
 
