@@ -77,12 +77,6 @@ label {
     margin: 5px;
 }
 
-input {
-    color: white;
-    /*background-color: #7C7C7C;
-    border: solid 1px #7C7C7C;*/
-}
-
 select {
     padding: 5px;
     font-size: 12px;

@@ -10,10 +10,10 @@
 
 <div class="pattern-sequencer-main-div">
     <div class="inputs">
-        <label for="song-length">Song length (bars)</label>
-        <input id="song-length"/>
-        <label for="bpm">BPM</label>
-        <input id="bpm"/>
+        <label>Song length (bars)</label>
+        <input class="song-length"/>
+        <label>BPM</label>
+        <input class="bpm"/>
         <button class="red-button">Play &#9654;</button>
     </div>
     <div class="control-bar">
@@ -29,8 +29,8 @@
 
         <label class="pattern-main-label">Pattern</label>
 
-        <label for="snap">Grid snap</label>
-        <select name="snap" id="snap">
+        <label>Grid snap</label>
+        <select class="snap">
             <option value="0">None</option>
             <option value="0.25">1/16</option>
             <option value="0.5" selected>1/8</option>
@@ -40,8 +40,8 @@
         </select>
 
 
-        <label for="newnote">Duration</label>
-        <select name="newnote" id="newnote">
+        <label>Duration</label>
+        <select class="newnote">
             <option value="0.25">1/16</option>
             <option value="0.5">1/8</option>
             <option value="1" selected>1/4</option>
@@ -49,7 +49,7 @@
             <option value="4">1</option>
         </select>
 
-        <label for="channel">Channel</label>
+        <label>Channel</label>
         <select name="channel" id="channel">
             <option value="1" selected>1</option>
             <option value="2">2</option>
@@ -79,7 +79,7 @@
             <canvas width="80" height="1500px" id="piano"></canvas>
         </div>
         <div id="control-div">
-            <label for="control-selector">MIDI Ctrl</label>
+            <label>MIDI Ctrl</label>
             <select name="control-selector" id="control-selector">
                 <option value="cc21" selected>CC-21</option>
                 <option value="cc22">CC-22</option>

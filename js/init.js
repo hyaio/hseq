@@ -66,8 +66,8 @@ var pluginFunction = function () {
 
 // INIT PATTERN EDITOR
     this.sheet = document.querySelector("#sheet");
-    this.snapMenu = document.querySelector("#snap");
-    this.durationMenu = document.querySelector("#newnote");
+    this.snapMenu = document.querySelector(".snap");
+    this.durationMenu = document.querySelector(".newnote");
     this.piano = document.querySelector("#piano");
     this.controls = document.querySelector("#controls");
 
