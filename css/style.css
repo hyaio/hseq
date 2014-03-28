@@ -6,20 +6,20 @@ body {
     user-select: none;
 }
 
-#container {
+.pattern-editor-main-div {
     width: 580px;
     height:300px;
     background-color: black;
 }
 
-#pattern-sequencer-main-div {
+.pattern-sequencer-main-div {
     width: 600px;
     height: 460px;
     background-color: black;
     position: absolute;
 }
 
-#interface {
+.pattern-editor-interface {
     position: relative;
     width: 600px;
     height:300px;
@@ -64,7 +64,7 @@ body {
     padding-top: 8px;
 }
 
-#pattern-editor-container {
+.pattern-editor-container {
     background: black;
     width: 600px;
     height: 460px;
@@ -112,7 +112,7 @@ select {
     border-bottom: 2px solid rgb(70, 70, 70);
 }
 
-#pattern-sequencer-main-div .inputs {
+.pattern-sequencer-main-div .inputs {
     padding-top: 4px;
     padding-bottom: 4px;
 }
@@ -195,7 +195,7 @@ select {
     font-size: 14px;
 }
 
-#pattern-sequencer-main-div input {
+.pattern-sequencer-main-div input {
     width: 5%;
 }
 

@@ -19,8 +19,8 @@ var pluginFunction = function () {
     }
 
 // Get elements from the DOM
-    this.patternSequencerDiv = document.querySelector("#pattern-sequencer-main-div");
-    this.patternEditorDiv = document.querySelector("#pattern-editor-container");
+    this.patternSequencerDiv = document.querySelector(".pattern-sequencer-main-div");
+    this.patternEditorDiv = document.querySelector(".pattern-editor-container");
     this.backToSeqButton = document.querySelector(".back-to-seq");
     this.patternMainLabel = document.querySelector(".pattern-main-label");
     this.resetButton = document.querySelector(".reset-button");
