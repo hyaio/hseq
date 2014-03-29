@@ -19,12 +19,12 @@ var pluginFunction = function () {
     }
 
 // Get elements from the DOM
-    this.patternSequencerDiv = document.querySelector("#pattern-sequencer-main-div");
-    this.patternEditorDiv = document.querySelector("#pattern-editor-container");
+    this.patternSequencerDiv = document.querySelector(".pattern-sequencer-main-div");
+    this.patternEditorDiv = document.querySelector(".pattern-editor-container");
     this.backToSeqButton = document.querySelector(".back-to-seq");
     this.patternMainLabel = document.querySelector(".pattern-main-label");
     this.resetButton = document.querySelector(".reset-button");
-    this.controlSelector = document.querySelector("#control-selector");
+    this.controlSelector = document.querySelector(".control-selector");
 
     this.backToSeqButton.addEventListener("click", function () {
         this.patternSequencerDiv.classList.remove("hidden");
@@ -65,13 +65,13 @@ var pluginFunction = function () {
     });
 
 // INIT PATTERN EDITOR
-    this.sheet = document.querySelector("#sheet");
-    this.snapMenu = document.querySelector("#snap");
-    this.durationMenu = document.querySelector("#newnote");
-    this.piano = document.querySelector("#piano");
-    this.controls = document.querySelector("#controls");
+    this.sheet = document.querySelector(".sheet");
+    this.snapMenu = document.querySelector(".snap");
+    this.durationMenu = document.querySelector(".newnote");
+    this.piano = document.querySelector(".piano");
+    this.controls = document.querySelector(".controls");
 
-    this.rollView = new RollView(sheet);
+    this.rollView = new RollView(this.sheet);
     this.snapMenu.addEventListener("change", function (e) {
         this.rollView.setStep(parseFloat(e.target.value, 10));
         this.rollView.render();
@@ -80,9 +80,9 @@ var pluginFunction = function () {
         this.rollView.setDefaultDuration(parseFloat(e.target.value, 10));
     }.bind(this));
 
-    this.pianoView = new PianoView(piano, 2, 5);
+    this.pianoView = new PianoView(this.piano, 2, 5);
 
-    this.controlView = new ControlView(controls);
+    this.controlView = new ControlView(this.controls);
 };
 
 var plugin = new pluginFunction();
