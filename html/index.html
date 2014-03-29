@@ -50,7 +50,7 @@
         </select>
 
         <label>Channel</label>
-        <select name="channel" id="channel">
+        <select class="channel">
             <option value="1" selected>1</option>
             <option value="2">2</option>
             <option value="3">3</option>
@@ -75,12 +75,12 @@
 
     <div class="pattern-editor-main-div">
         <div class="pattern-editor-interface">
-            <canvas width="500" height="1500px" id="sheet"></canvas>
-            <canvas width="80" height="1500px" id="piano"></canvas>
+            <canvas width="500" height="1500px" class="sheet"></canvas>
+            <canvas width="80" height="1500px" class="piano"></canvas>
         </div>
-        <div id="control-div">
+        <div class="control-div">
             <label>MIDI Ctrl</label>
-            <select name="control-selector" id="control-selector">
+            <select class="control-selector">
                 <option value="cc21" selected>CC-21</option>
                 <option value="cc22">CC-22</option>
                 <option value="cc23">CC-23</option>
@@ -88,7 +88,7 @@
                 <option value="cc25">CC-25</option>
             </select>
             <button class="reset-button">Reset</button>
-            <canvas width="500" height="100" id="controls"></canvas>
+            <canvas width="500" height="100" class="controls"></canvas>
         </div>
 
     </div>
