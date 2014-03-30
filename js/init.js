@@ -1,6 +1,8 @@
-var pluginFunction = function () {
+var initPlugin = function (args) {
 
 // TODO when the event is unattached, handle the bind
+
+    this.domEl = args.div;
 
 // INIT
     this.PATTERN_N = 16;
@@ -19,12 +21,12 @@ var pluginFunction = function () {
     }
 
 // Get elements from the DOM
-    this.patternSequencerDiv = document.querySelector(".pattern-sequencer-main-div");
-    this.patternEditorDiv = document.querySelector(".pattern-editor-container");
-    this.backToSeqButton = document.querySelector(".back-to-seq");
-    this.patternMainLabel = document.querySelector(".pattern-main-label");
-    this.resetButton = document.querySelector(".reset-button");
-    this.controlSelector = document.querySelector(".control-selector");
+    this.patternSequencerDiv = this.domEl.querySelector(".pattern-sequencer-main-div");
+    this.patternEditorDiv = this.domEl.querySelector(".pattern-editor-container");
+    this.backToSeqButton = this.domEl.querySelector(".back-to-seq");
+    this.patternMainLabel = this.domEl.querySelector(".pattern-main-label");
+    this.resetButton = this.domEl.querySelector(".reset-button");
+    this.controlSelector = this.domEl.querySelector(".control-selector");
 
     this.backToSeqButton.addEventListener("click", function () {
         this.patternSequencerDiv.classList.remove("hidden");
@@ -40,13 +42,13 @@ var pluginFunction = function () {
     }.bind(this));
 
 // INIT SEQUENCER
-    this.psElement = document.querySelector(".pattern-sequencer");
+    this.psElement = this.domEl.querySelector(".pattern-sequencer");
     this.ps = new PatternSequencer(this.psElement, {
         songLen: 32,
         patternN: 16
     });
 
-    this.patternListElement = document.querySelector(".pattern-list");
+    this.patternListElement = this.domEl.querySelector(".pattern-list");
     this.pv = new PatternView(this.patternListElement, {
         patternButtonCallback: function (pattern) {
 
@@ -65,11 +67,11 @@ var pluginFunction = function () {
     });
 
 // INIT PATTERN EDITOR
-    this.sheet = document.querySelector(".sheet");
-    this.snapMenu = document.querySelector(".snap");
-    this.durationMenu = document.querySelector(".newnote");
-    this.piano = document.querySelector(".piano");
-    this.controls = document.querySelector(".controls");
+    this.sheet = this.domEl.querySelector(".sheet");
+    this.snapMenu = this.domEl.querySelector(".snap");
+    this.durationMenu = this.domEl.querySelector(".newnote");
+    this.piano = this.domEl.querySelector(".piano");
+    this.controls = this.domEl.querySelector(".controls");
 
     this.rollView = new RollView(this.sheet);
     this.snapMenu.addEventListener("change", function (e) {
@@ -83,6 +85,6 @@ var pluginFunction = function () {
     this.pianoView = new PianoView(this.piano, 2, 5);
 
     this.controlView = new ControlView(this.controls);
-};
 
-var plugin = new pluginFunction();
+    args.hostInterface.setInstanceStatus ('ready');
+};

@@ -5,12 +5,12 @@ module.exports = function(grunt) {
         pkg: grunt.file.readJSON('package.json'),
         concat: {
             options: {
-                stripBanners: true,
-                banner: '/*! <%= pkg.name %> - v<%= pkg.version %> - ' +
-                    '<%= grunt.template.today("yyyy-mm-dd") %> */'
+                stripBanners: true
             },
             dist: {
-                src: ['js/utils.js',
+                src: [
+                    'js/plugin-conf.js',
+                    'js/utils.js',
                     'js/strip.js',
                     'js/roll-view.js',
                     'js/piano-view.js',
@@ -18,7 +18,8 @@ module.exports = function(grunt) {
                     'js/pattern-view.js',
                     'js/pattern-sequencer.js',
                     'js/piano-view.js',
-                    'js/init.js'],
+                    'js/init.js',
+                    'js/post.js'],
                 dest: 'dist/script.js'
             }
         },
