@@ -1,4 +1,6 @@
-return {
-    initPlugin: initPlugin,
-    pluginConf: pluginConf
-};
+    return {
+        initPlugin: initPlugin,
+        pluginConf: pluginConf
+    };
+
+});

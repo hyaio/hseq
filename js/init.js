@@ -85,4 +85,6 @@ var initPlugin = function (args) {
     this.pianoView = new PianoView(this.piano, 2, 5);
 
     this.controlView = new ControlView(this.controls);
+
+    args.hostInterface.setInstanceStatus ('ready');
 };

@@ -1,8 +1,8 @@
-/*! piano-roll - v0.0.1 - 2014-03-30 */define(['require',
+define(['require',
     'github:pieroxy/lz-string@master/libs/lz-string-1.3.3-min',
     './index.html!text',
     './style.css!text',
-    'google Exo+2:400,200,300 !font'
+    '#google Exo 2:400,200,300 !font'
     ], function(require, LZString, htmlTemp, cssTemp) {
 
     var pluginConf = {
@@ -868,4 +868,12 @@ var initPlugin = function (args) {
     this.pianoView = new PianoView(this.piano, 2, 5);
 
     this.controlView = new ControlView(this.controls);
+
+    args.hostInterface.setInstanceStatus ('ready');
 };
+    return {
+        initPlugin: initPlugin,
+        pluginConf: pluginConf
+    };
+
+});
