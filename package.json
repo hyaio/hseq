@@ -1,14 +1,17 @@
 {
   "name": "piano-roll",
   "version": "0.0.1",
-  "description": "Piano roll plugin for hya.io",
+  "description": "Sequencer plugin for hya.io",
   "main": "script.js",
   "scripts": {
     "test": "grunt test"
   },
+  "directories": {
+    "lib": "dist"
+  },
   "repository": {
     "type": "git",
-    "url": "https://github.com/hyaio/piano-roll.git"
+    "url": "https://github.com/hyaio/hseq.git"
   },
   "keywords": [
     "piano",
