@@ -10,7 +10,9 @@ module.exports = function(grunt) {
                     '<%= grunt.template.today("yyyy-mm-dd") %> */'
             },
             dist: {
-                src: ['js/utils.js',
+                src: [
+                    'js/plugin-conf.js',
+                    'js/utils.js',
                     'js/strip.js',
                     'js/roll-view.js',
                     'js/piano-view.js',
@@ -18,7 +20,8 @@ module.exports = function(grunt) {
                     'js/pattern-view.js',
                     'js/pattern-sequencer.js',
                     'js/piano-view.js',
-                    'js/init.js'],
+                    'js/init.js',
+                    'post.js'],
                 dest: 'dist/script.js'
             }
         },
