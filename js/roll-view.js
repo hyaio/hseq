@@ -4,12 +4,6 @@ var SEMIBREVE = 4, // (bar)
     CROMA = 0.5, // (1/8 bar)
     SEMICROMA = 0.25; // (1/16 bar)
 
-var idCounter = 0,
-    uniqueId = function (prefix) {
-        var id = ++idCounter + '';
-        return prefix ? prefix + id : id;
-    };
-
 var RollView = function (el, strip) {
     this.name = "";
     this.el = el;
@@ -271,3 +265,11 @@ RollView.prototype.dblHandler = function (e) {
         this.render();
     }
 };
+
+RollView.prototype.getState = function () {
+    return {
+        "strip": this.strip,
+        "step": this.step,
+        "noteDur": this.defaultDuration
+    }
+}
