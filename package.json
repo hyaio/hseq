@@ -6,6 +6,9 @@
   "scripts": {
     "test": "grunt test"
   },
+  "directories": {
+      "dist": "dist"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/hyaio/piano-roll.git"

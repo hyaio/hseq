@@ -420,6 +420,14 @@ RollView.prototype.dblHandler = function (e) {
         this.render();
     }
 };
+
+RollView.prototype.getState = function () {
+    return {
+        "strip": this.strip,
+        "step": this.step,
+        "noteDur": this.defaultDuration
+    }
+}
 var PianoView = function (el, minOct, octaves) {
     this.el = el;
     this.tw = el.width;
