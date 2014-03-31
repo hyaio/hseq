@@ -1,3 +1,9 @@
+var idCounter = 0,
+    uniqueId = function (prefix) {
+        var id = ++idCounter + '';
+        return prefix ? prefix + id : id;
+    };
+
 var Note = function (start, duration, number, id) {
     this.start = start;
     this.duration = duration;

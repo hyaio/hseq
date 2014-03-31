@@ -70,6 +70,12 @@ var getEventPosition = function (e, obj) {
         y: my
     };
 };
+var idCounter = 0,
+    uniqueId = function (prefix) {
+        var id = ++idCounter + '';
+        return prefix ? prefix + id : id;
+    };
+
 var Note = function (start, duration, number, id) {
     this.start = start;
     this.duration = duration;
@@ -152,12 +158,6 @@ var SEMIBREVE = 4, // (bar)
     SEMIMINIMA = 1, // (quarter bar)
     CROMA = 0.5, // (1/8 bar)
     SEMICROMA = 0.25; // (1/16 bar)
-
-var idCounter = 0,
-    uniqueId = function (prefix) {
-        var id = ++idCounter + '';
-        return prefix ? prefix + id : id;
-    };
 
 var RollView = function (el, strip) {
     this.name = "";
