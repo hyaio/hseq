@@ -12,7 +12,7 @@ var PatternView = function (el, options) {
 
 PatternView.prototype.getPattern = function (pattern) {
     return this.patterns[pattern];
-}
+};
 
 PatternView.prototype._downHandlerDelegator = function (e) {
     if (e.target && e.target.nodeName == "BUTTON") {

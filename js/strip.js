@@ -71,6 +71,9 @@ Strip.prototype.getOrdered = function () {
 Strip.prototype.getHash = function () {
     return this.notesHash;
 };
+Strip.prototype.setHash = function (hash) {
+    this.notesHash = hash;
+};
 Strip.prototype.getNoteAtPosition = function (time, number) {
     for (var key in this.notesHash) {
         var note = this.notesHash[key];

@@ -4,6 +4,16 @@ var ControlModel = function () {
     };
     this.current = "cc21";
 };
+ControlModel.prototype.getState = function () {
+    return {
+        controlData: this.controlData,
+        current: this.current
+    };
+};
+ControlModel.prototype.setState = function (state) {
+    this.controlData = state.controlData;
+    this.current = state.current;
+};
 ControlModel.prototype.getData = function () {
     return this.controlData[this.current];
 };

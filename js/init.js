@@ -3,12 +3,12 @@ var initPlugin = function (args) {
 // TODO when the event is unattached, handle the bind
 
     this.domEl = args.div;
+    this.patternList = [];
 
 // INIT
     this.PATTERN_N = 16;
 
 // generate the pattern list
-    this.patternList = [];
 
     for (var p = 0; p < this.PATTERN_N; p += 1) {
         this.patternList.push({
@@ -19,6 +19,13 @@ var initPlugin = function (args) {
         });
 
     }
+
+    this.setState = function () {
+        for (var p = 0; p < this.PATTERN_N; p += 1) {
+            this.patternList[p].strip.setHash(state.patternList[p].strip);
+            this.patternList[p].controls.setState(state.patternList[p].controls);
+        }
+    };
 
 // Get elements from the DOM
     this.patternSequencerDiv = this.domEl.querySelector(".pattern-sequencer-main-div");
@@ -85,6 +92,18 @@ var initPlugin = function (args) {
     this.pianoView = new PianoView(this.piano, 2, 5);
 
     this.controlView = new ControlView(this.controls);
+
+    this.getState = function () {
+        var state = {
+            patternList: []
+        };
+
+        for (var p = 0; p < this.PATTERN_N; p += 1) {
+            state.patternList[p].strip = (this.patternList[p].strip.getHash());
+            state.patternList[p].controls = (this.patternList[p].controls.getState());
+        }
+
+    }
 
     args.hostInterface.setInstanceStatus ('ready');
 };

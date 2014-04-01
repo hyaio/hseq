@@ -55,6 +55,10 @@ PatternSequencer.prototype.setDimensions = function () {
 };
 
 PatternSequencer.prototype.setState = function (x, y, val) {
+    if (arguments.length === 1) {
+        this.data = arguments[0];
+        return;
+    }
     if (typeof this.data[x] == "undefined") {
         this.data[x] = [];
     }
@@ -62,6 +66,9 @@ PatternSequencer.prototype.setState = function (x, y, val) {
 };
 
 PatternSequencer.prototype.getState = function (x, y, val) {
+    if (arguments.length === 0) {
+        return this.data;
+    }
     if (typeof this.data[x] == "undefined") {
         return undefined;
     }
