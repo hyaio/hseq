@@ -27,6 +27,10 @@ var initPlugin = function (args) {
         }
     };
 
+    if (args.initialState && args.initialState.data) {
+        this.setState(args.initialState.data);
+    }
+
 // Get elements from the DOM
     this.patternSequencerDiv = this.domEl.querySelector(".pattern-sequencer-main-div");
     this.patternEditorDiv = this.domEl.querySelector(".pattern-editor-container");
@@ -103,7 +107,13 @@ var initPlugin = function (args) {
             state.patternList[p].controls = (this.patternList[p].controls.getState());
         }
 
-    }
+        return state;
+    };
+
+    var saveState = function () {
+        return { data: this.getState() };
+    };
+    args.hostInterface.setSaveState (saveState.bind(this));
 
     args.hostInterface.setInstanceStatus ('ready');
 };
