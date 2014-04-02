@@ -20,7 +20,7 @@ var initPlugin = function (args) {
 
     }
 
-    this.setState = function () {
+    this.setState = function (state) {
         for (var p = 0; p < this.PATTERN_N; p += 1) {
             this.patternList[p].strip.setHash(state.patternList[p].strip);
             this.patternList[p].controls.setState(state.patternList[p].controls);
@@ -103,6 +103,7 @@ var initPlugin = function (args) {
         };
 
         for (var p = 0; p < this.PATTERN_N; p += 1) {
+            state.patternList[p] = {};
             state.patternList[p].strip = (this.patternList[p].strip.getHash());
             state.patternList[p].controls = (this.patternList[p].controls.getState());
         }

@@ -65,5 +65,6 @@ module.exports = function(grunt) {
 
     // Default task(s).
     grunt.registerTask('default', ['concat', /*'copy',*/ 'uglify', 'cssmin', 'htmlmin']);
+    grunt.registerTask('nomin', ['concat', 'cssmin', 'htmlmin']);
 
 };
