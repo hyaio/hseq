@@ -8,29 +8,6 @@ var initPlugin = function (args) {
 // INIT
     this.PATTERN_N = 16;
 
-// generate the pattern list
-
-    for (var p = 0; p < this.PATTERN_N; p += 1) {
-        this.patternList.push({
-            name: "Pattern " + (p + 1),
-            channel: 1,
-            strip: new Strip(),
-            controls: new ControlModel()
-        });
-
-    }
-
-    this.setState = function (state) {
-        for (var p = 0; p < this.PATTERN_N; p += 1) {
-            this.patternList[p].strip.setHash(state.patternList[p].strip);
-            this.patternList[p].controls.setState(state.patternList[p].controls);
-        }
-    };
-
-    if (args.initialState && args.initialState.data) {
-        this.setState(args.initialState.data);
-    }
-
 // Get elements from the DOM
     this.patternSequencerDiv = this.domEl.querySelector(".pattern-sequencer-main-div");
     this.patternEditorDiv = this.domEl.querySelector(".pattern-editor-container");
@@ -58,6 +35,31 @@ var initPlugin = function (args) {
         songLen: 32,
         patternN: 16
     });
+
+    // Generate the pattern list
+
+    for (var p = 0; p < this.PATTERN_N; p += 1) {
+        this.patternList.push({
+            name: "Pattern " + (p + 1),
+            channel: 1,
+            strip: new Strip(),
+            controls: new ControlModel()
+        });
+    }
+
+    this.setState = function (state) {
+
+        this.ps.setState(state.sequencer);
+
+        for (var p = 0; p < this.PATTERN_N; p += 1) {
+            this.patternList[p].strip.setHash(state.patternList[p].strip);
+            this.patternList[p].controls.setState(state.patternList[p].controls);
+        }
+    };
+
+    if (args.initialState && args.initialState.data) {
+        this.setState(args.initialState.data);
+    }
 
     this.patternListElement = this.domEl.querySelector(".pattern-list");
     this.pv = new PatternView(this.patternListElement, {
@@ -99,6 +101,7 @@ var initPlugin = function (args) {
 
     this.getState = function () {
         var state = {
+            sequencer: this.ps.getState(),
             patternList: []
         };
 
