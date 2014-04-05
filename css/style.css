@@ -77,10 +77,18 @@ label {
     margin: 5px;
 }
 
+.pattern-main-label {
+    padding-left: 6px;
+    padding-right: 6px;
+    padding-bottom: 2px;
+    border-radius: 2px;
+    background-color: #4E1717;
+}
+
 select {
     padding: 5px;
     font-size: 12px;
-    border-radius: 0;
+    border-radius: 2px;
     -webkit-appearance: none;
 }
 
@@ -88,6 +96,23 @@ select {
     width: 80%;
     margin-top: 8px;
     margin-left: 8%;
+}
+
+.play-button {
+    top: 1px;
+}
+
+.play-button-pattern {
+    left: 24px;
+}
+
+.back-to-seq {
+    left: 20px;
+    top: 1px;
+}
+
+.play-button-song {
+    left: 9px;
 }
 
 .reset-button {
@@ -106,9 +131,35 @@ select {
     border-bottom: 2px solid rgb(70, 70, 70);
 }
 
-.pattern-sequencer-main-div .inputs {
-    padding-top: 4px;
-    padding-bottom: 4px;
+.inputs-central {
+    display: inline-block;
+    margin-left: 24px;
+}
+
+.main-inputs-central {
+    display: inline-block;
+    position: relative;
+    left: 178px;
+    height: 28px;
+}
+
+.main-inputs-central input {
+    margin-left: 5px;
+    margin-right: 12px;
+}
+
+.toggle-loop {
+    display: inline;
+    background-color: #696969;
+    color: #fff;
+    font-family: "Exo 2";
+    font-size: 14px;
+    padding: 2px 6px 4px;
+    margin-left: 14px;
+}
+
+.toggle-loop.down {
+    background-color: #C78104;
 }
 
 /*sr css*/
@@ -194,9 +245,7 @@ select {
 }
 
 .inputs button {
-    float: right;
     position: relative;
-    margin: 0 4px 0 0;
 }
 
 .hidden {

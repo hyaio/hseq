@@ -2,11 +2,14 @@
 
     <div class="pattern-sequencer-main-div">
         <div class="inputs">
-            <label>Song length (bars)</label>
-            <input class="song-length"/>
-            <label>BPM</label>
-            <input class="bpm"/>
-            <button class="red-button">Play &#9654;</button>
+            <div class="main-inputs-central">
+                <label>Song length (bars)</label>
+                <input class="song-length"/>
+                <label>BPM</label>
+                <input class="bpm"/>
+                <span class="toggle-loop">Loop</span>
+            </div>
+            <button class="red-button play-button play-button-song">Play &#9654;</button>
         </div>
         <div class="control-bar">
         </div>
@@ -20,48 +23,50 @@
         <div class="inputs">
 
             <label class="pattern-main-label">Pattern</label>
-
+            <div class="inputs-central">
             <label>Grid snap</label>
-            <select class="snap">
-                <option value="0">None</option>
-                <option value="0.25">1/16</option>
-                <option value="0.5" selected>1/8</option>
-                <option value="1">1/4</option>
-                <option value="2">1/2</option>
-                <option value="4">1</option>
-            </select>
+                <select class="snap">
+                    <option value="0">None</option>
+                    <option value="0.25">1/16</option>
+                    <option value="0.5" selected>1/8</option>
+                    <option value="1">1/4</option>
+                    <option value="2">1/2</option>
+                    <option value="4">1</option>
+                </select>
 
 
-            <label>Duration</label>
-            <select class="newnote">
-                <option value="0.25">1/16</option>
-                <option value="0.5">1/8</option>
-                <option value="1" selected>1/4</option>
-                <option value="2">1/2</option>
-                <option value="4">1</option>
-            </select>
+                <label>Duration</label>
+                <select class="newnote">
+                    <option value="0.25">1/16</option>
+                    <option value="0.5">1/8</option>
+                    <option value="1" selected>1/4</option>
+                    <option value="2">1/2</option>
+                    <option value="4">1</option>
+                </select>
 
-            <label>Channel</label>
-            <select class="channel">
-                <option value="1" selected>1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
-                <option value="4">4</option>
-                <option value="5">5</option>
-                <option value="6">6</option>
-                <option value="7">7</option>
-                <option value="8">8</option>
-                <option value="9">9</option>
-                <option value="10">10</option>
-                <option value="11">11</option>
-                <option value="12">12</option>
-                <option value="13">13</option>
-                <option value="14">14</option>
-                <option value="15">15</option>
-                <option value="16">16</option>
-            </select>
+                <label>Channel</label>
+                <select class="channel">
+                    <option value="1" selected>1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="6">6</option>
+                    <option value="7">7</option>
+                    <option value="8">8</option>
+                    <option value="9">9</option>
+                    <option value="10">10</option>
+                    <option value="11">11</option>
+                    <option value="12">12</option>
+                    <option value="13">13</option>
+                    <option value="14">14</option>
+                    <option value="15">15</option>
+                    <option value="16">16</option>
+                </select>
+            </div>
 
             <button class="back-to-seq red-button">Back</button>
+            <button class="red-button play-button play-button-pattern">Play &#9654;</button>
 
         </div>
 

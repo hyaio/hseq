@@ -4,6 +4,7 @@ var initPlugin = function (args) {
 
     this.domEl = args.div;
     this.patternList = [];
+    this.loop = false;
 
 // INIT
     this.PATTERN_N = 16;
@@ -15,6 +16,18 @@ var initPlugin = function (args) {
     this.patternMainLabel = this.domEl.querySelector(".pattern-main-label");
     this.resetButton = this.domEl.querySelector(".reset-button");
     this.controlSelector = this.domEl.querySelector(".control-selector");
+    this.toggleButton = this.domEl.querySelector(".toggle-loop");
+
+    this.toggleButton.addEventListener("click", function () {
+        if (!this.loop) {
+            this.toggleButton.classList.add('down');
+            this.loop = true;
+        }
+        else {
+            this.toggleButton.classList.remove('down');
+            this.loop = false;
+        }
+    }.bind(this));
 
     this.backToSeqButton.addEventListener("click", function () {
         this.patternSequencerDiv.classList.remove("hidden");
