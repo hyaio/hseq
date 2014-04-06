@@ -17,6 +17,7 @@ var RollView = function (el, strip) {
     this.resizing = false;
     this.moving = false;
     this._renderBound = this._render.bind(this);
+    this.channel = 1;
 
     this.strip = strip;
     this.noteHeight = Math.round(this.th / (5 * 12));
@@ -37,6 +38,14 @@ var RollView = function (el, strip) {
         this.render();
     }
 
+};
+
+RollView.prototype.setChannel = function (channel) {
+    this.channel = channel;
+};
+
+RollView.prototype.getChannel = function () {
+    return this.channel;
 };
 
 RollView.prototype.setStrip = function (strip) {
@@ -279,6 +288,7 @@ RollView.prototype.mouseOutHandler = function (e) {
 
 RollView.prototype.getState = function () {
     return {
+        "channel": this.channel,
         "strip": this.strip,
         "step": this.step,
         "noteDur": this.defaultDuration

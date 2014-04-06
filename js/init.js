@@ -25,6 +25,12 @@ var initPlugin = function (args) {
     this.bpmElement = this.domEl.querySelector(".bpm");
     this.playSongElement = this.domEl.querySelector(".play-button-song");
     this.playPatternElement = this.domEl.querySelector(".play-button-pattern");
+    this.channelElement = this.domEl.querySelector(".channel");
+
+    // Channel
+    this.channelElement.addEventListener('change', function (e) {
+        this.patternList[this.currentPattern].channel = e.target.value;
+    }.bind(this));
 
     // Play element
     this.songScheduler = new Scheduler ({
@@ -145,8 +151,10 @@ var initPlugin = function (args) {
     };
 
     this.backToSeqButton.addEventListener("click", function () {
+        this.currentPattern = null;
         this.patternSequencerDiv.classList.remove("hidden");
         this.patternEditorDiv.classList.add("hidden");
+        this.pv.render();
     }.bind(this));
 
     this.resetButton.addEventListener("click", function () {
@@ -185,6 +193,7 @@ var initPlugin = function (args) {
         for (var p = 0; p < this.PATTERN_N; p += 1) {
             this.patternList[p].strip.setHash(state.patternList[p].strip);
             this.patternList[p].controls.setState(state.patternList[p].controls);
+            this.patternList[p].channel = state.patternList[p].channel;
         }
     };
 
@@ -211,6 +220,9 @@ var initPlugin = function (args) {
 
             this.patternSequencerDiv.classList.add("hidden");
             this.patternEditorDiv.classList.remove("hidden");
+
+            this.channelElement.value = this.patternList[pattern].channel;
+            this.currentPattern = pattern;
         }.bind(this),
         patterns: this.patternList
     });
@@ -247,6 +259,7 @@ var initPlugin = function (args) {
             state.patternList[p] = {};
             state.patternList[p].strip = (this.patternList[p].strip.getHash());
             state.patternList[p].controls = (this.patternList[p].controls.getState());
+            state.patternList[p].channel = this.patternList[p].channel;
         }
 
         return state;

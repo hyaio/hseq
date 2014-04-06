@@ -3,7 +3,7 @@ var PatternView = function (el, options) {
     this.patternButtonCallback = options.patternButtonCallback;
     this.patterns = options.patterns;
 
-    this._render();
+    this.render();
 
     this.boundDownHandlerDelegator = this._downHandlerDelegator.bind(this);
     el.addEventListener("mousedown", this.boundDownHandlerDelegator);
@@ -24,7 +24,7 @@ PatternView.prototype._downHandlerDelegator = function (e) {
     }
 };
 
-PatternView.prototype._render = function () {
+PatternView.prototype.render = function () {
 
     var html = "";
     for (var i = 0; i < this.patterns.length; i += 1) {
