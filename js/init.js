@@ -61,10 +61,14 @@ var initPlugin = function (args) {
         if (!this.patternScheduler.getPlayingState ()) {
             this.playPatternElement.innerHTML = "Queue";
             var strip = this.rollView.getStrip();
-            this.patternScheduler.playPattern(strip, null, function () {
-                this.playPatternElement.innerHTML = "Play &#9654;";
-                this.patternScheduler.stop();
-            }.bind(this), this.bpm, null, null);
+            this.patternScheduler.playPattern(strip,
+                this.patternList[this.currentPattern].controls.getState().controlData,
+                function () {
+                    this.playPatternElement.innerHTML = "Play &#9654;";
+                    this.patternScheduler.stop();
+                }.bind(this),
+                this.bpm,
+                this.patternList[this.currentPattern].channel);
         }
 
     }.bind(this));

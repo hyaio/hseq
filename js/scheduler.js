@@ -23,12 +23,6 @@ Scheduler.prototype.playPattern = function (strip, controls, endCallback, bpm, c
     var timeNow = this.context.currentTime + SCHED_DELAY;
     var quarterTime = 60 / bpm / 4;
 
-    /* TODO */
-    channel = 1;
-    /* /TODO */
-
-    var patternSchedule = [];
-
     for (var note in ordered) {
         var n = ordered[note];
         var msgOn = {
@@ -45,7 +39,6 @@ Scheduler.prototype.playPattern = function (strip, controls, endCallback, bpm, c
         };
         var whenOn = timeNow + (n.start * quarterTime);
         var whenOff = whenOn + (n.duration * quarterTime);
-        console.log ("Note starting: " + whenOn + " ending: " + whenOff);
         this.midiHandler.sendMIDIMessage (msgOn, whenOn);
         this.midiHandler.sendMIDIMessage (msgOff, whenOff);
     }
@@ -57,6 +50,5 @@ Scheduler.prototype.playPattern = function (strip, controls, endCallback, bpm, c
 };
 
 Scheduler.prototype.stop = function () {
-    console.log ("Stop");
     this.isPlaying = false;
 };
