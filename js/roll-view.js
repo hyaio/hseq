@@ -44,6 +44,10 @@ RollView.prototype.setStrip = function (strip) {
     this.render();
 };
 
+RollView.prototype.getStrip = function (strip) {
+    return this.strip;
+};
+
 RollView.prototype.setStep = function (step) {
     this.step = step;
 };

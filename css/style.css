@@ -127,6 +127,10 @@ select {
     margin-top: 10px;
 }
 
+input {
+    text-align: center;
+}
+
 .inputs {
     border-bottom: 2px solid rgb(70, 70, 70);
 }

@@ -18,6 +18,7 @@ module.exports = function(grunt) {
                     'js/pattern-view.js',
                     'js/pattern-sequencer.js',
                     'js/piano-view.js',
+                    'js/scheduler.js',
                     'js/init.js',
                     'js/post.js'],
                 dest: 'dist/script.js'

@@ -4,20 +4,13 @@ var idCounter = 0,
         return prefix ? prefix + id : id;
     };
 
-var Note = function (start, duration, number, id) {
-    this.start = start;
-    this.duration = duration;
-    this.number = number;
-    this.id = id;
-};
-Note.prototype.setStart = function (newStart) {
-    this.start = newStart;
-};
-Note.prototype.setDuration = function (newDuration) {
-    this.duration = newDuration;
-};
-Note.prototype.setNumber = function (newNumber) {
-    this.number = newNumber;
+var createNote = function (start, duration, number, id) {
+    return {
+        start: start,
+        duration: duration,
+        number: number,
+        id: id
+    };
 };
 
 var Strip = function () {
@@ -28,7 +21,7 @@ var Strip = function () {
 Strip.prototype.syncSort = function () {
     var sortable = [];
     for (var note in this.notesHash) {
-        sortable.push(note.id);
+        sortable.push(this.notesHash[note]);
     }
     sortable.sort(function (a, b) {
         return a.start - b.start;
@@ -38,7 +31,7 @@ Strip.prototype.syncSort = function () {
 
 Strip.prototype.addNote = function (start, duration, number) {
     var id = uniqueId();
-    this.notesHash[id] = new Note(start, duration, number, id);
+    this.notesHash[id] = createNote(start, duration, number, id);
     this.syncSort();
     return id;
 };
@@ -53,16 +46,16 @@ Strip.prototype.removeNote = function (id) {
 };
 
 Strip.prototype.resizeNote = function (id, duration) {
-    this.notesHash[id].setDuration(duration);
+    this.notesHash[id].duration = duration;
 };
 
 Strip.prototype.moveNote = function (id, start, number) {
     if (start !== null) {
-        this.notesHash[id].setStart(start);
+        this.notesHash[id].start = start;
         this.syncSort();
     }
     if (number !== null) {
-        this.notesHash[id].setNumber(number);
+        this.notesHash[id].number = number;
     }
 };
 Strip.prototype.getOrdered = function () {

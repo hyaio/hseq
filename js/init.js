@@ -6,6 +6,7 @@ var initPlugin = function (args) {
     this.patternList = [];
     this.loop = false;
     this.songLen = 16;
+    this.bpm = 90;
 
 // INIT
     this.PATTERN_N = 16;
@@ -19,7 +20,64 @@ var initPlugin = function (args) {
     this.controlSelector = this.domEl.querySelector(".control-selector");
     this.toggleButton = this.domEl.querySelector(".toggle-loop");
     this.songLengthElement = this.domEl.querySelector(".song-length");
+    this.bpmElement = this.domEl.querySelector(".bpm");
+    this.playSongElement = this.domEl.querySelector(".play-button-song");
+    this.playPatternElement = this.domEl.querySelector(".play-button-pattern");
 
+    // Play element
+    this.songScheduler = new Scheduler ({
+        el: this.playSongElement
+    });
+    this.patternScheduler = new Scheduler ({
+        el: this.playPatternElement
+    });
+
+    this.playSongElement.addEventListener('click', function (e) {
+       if (this.songScheduler.getPlayingState ()) {
+           this.playSongElement.innerHTML = "Play &#9654;";
+           this.songScheduler.stop();
+       }
+       else {
+           this.playSongElement.innerHTML = "Stop &#9724;";
+           this.songScheduler.playSong();
+       }
+    }.bind(this));
+
+    this.playPatternElement.addEventListener('click', function (e) {
+        if (this.patternScheduler.getPlayingState ()) {
+            this.playPatternElement.innerHTML = "Play &#9654;";
+            this.patternScheduler.stop();
+        }
+        else {
+            this.playPatternElement.innerHTML = "Stop &#9724;";
+            var strip = this.rollView.getStrip();
+            this.patternScheduler.playPattern(strip);
+        }
+
+    }.bind(this));
+
+    // Schedulers
+    Scheduler.prototype.setButtonView = function (state) {
+        if (state === 'play' && !this.isPlaying) {
+            this.playButton.el.innerHTML = this.playButton.stopText;
+            this.isPlaying = true;
+        }
+        if (state === 'stop' && this.isPlaying) {
+            this.playButton.el.innerHTML = this.playButton.playText;
+            this.isPlaying = false;
+        }
+    };
+
+    Scheduler.prototype.toggleButtonView = function () {
+        if (this.isPlaying) {
+            this.setButtonView('stop');
+        }
+        else {
+            this.setButtonView('play');
+        }
+    };
+
+    // Song length input
     this.songLengthElement.addEventListener('change', function (e) {
         var sl = parseInt(e.target.value, 10);
         if (sl) {
@@ -44,16 +102,40 @@ var initPlugin = function (args) {
         }
     };
 
+    // BPM input
+    this.bpmElement.addEventListener('change', function (e) {
+        var bpm = parseInt(e.target.value, 10);
+        if (bpm && (bpm >= 10 && bpm <=180)) {
+            this.bpm = bpm;
+        }
+        else {
+            this.changeBpm();
+        }
+    }.bind(this));
+
+    this.changeBpm = function () {
+        this.bpmElement.value = this.bpm;
+    };
+
+    // Toggle loop button
     this.toggleButton.addEventListener("click", function () {
         if (!this.loop) {
-            this.toggleButton.classList.add('down');
             this.loop = true;
         }
         else {
-            this.toggleButton.classList.remove('down');
             this.loop = false;
         }
+        this.changeLoopToggle();
     }.bind(this));
+
+    this.changeLoopToggle = function () {
+        if (this.loop) {
+            this.toggleButton.classList.add('down');
+        }
+        else {
+            this.toggleButton.classList.remove('down');
+        }
+    };
 
     this.backToSeqButton.addEventListener("click", function () {
         this.patternSequencerDiv.classList.remove("hidden");
@@ -89,6 +171,8 @@ var initPlugin = function (args) {
 
     this.setState = function (state) {
 
+        this.loop = state.loop;
+        this.bpm = state.bpm;
         this.ps.setState(state.sequencer);
 
         for (var p = 0; p < this.PATTERN_N; p += 1) {
@@ -101,7 +185,10 @@ var initPlugin = function (args) {
         this.setState(args.initialState.data);
     }
 
+    // Changing the input values
     this.changeSongLength({syncView: true});
+    this.changeBpm();
+    this.changeLoopToggle();
 
     this.patternListElement = this.domEl.querySelector(".pattern-list");
     this.pv = new PatternView(this.patternListElement, {
@@ -144,7 +231,9 @@ var initPlugin = function (args) {
     this.getState = function () {
         var state = {
             sequencer: this.ps.getState(),
-            patternList: []
+            patternList: [],
+            bpm: this.bpm,
+            loop: this.loop
         };
 
         for (var p = 0; p < this.PATTERN_N; p += 1) {
