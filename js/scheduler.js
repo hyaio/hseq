@@ -11,9 +11,22 @@ Scheduler.prototype.getPlayingState = function () {
     return this.isPlaying;
 };
 
-Scheduler.prototype.playSong = function (song, isLoop) {
+Scheduler.prototype.playSong = function (song, isLoop, endCallback, bpm) {
     console.log ("Play Song");
     this.isPlaying = true;
+    // For every column
+    for (var y = 0; y < song.songLen; y+=1) {
+        // Take every row
+        if (song.data[y]) {
+            for (var x = 0; x < song.data[y].length; x += 1) {
+                // Play the row
+                var row = song.data[y][x];
+                if (row) {
+                    console.log("Playing #" + y + " of pattern " + x);
+                }
+            }
+        }
+    }
 };
 
 Scheduler.prototype.playPattern = function (strip, controls, endCallback, bpm, channel) {

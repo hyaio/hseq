@@ -53,7 +53,14 @@ var initPlugin = function (args) {
        }
        else {
            this.playSongElement.innerHTML = "Stop &#9724;";
-           this.songScheduler.playSong();
+           this.songScheduler.playSong(
+               this.ps.getState(),
+               this.loop,
+               function () {
+                   this.playSongElement.innerHTML = "Play &#9654;";
+               }.bind(this),
+               this.bpm
+            );
        }
     }.bind(this));
 
@@ -72,27 +79,6 @@ var initPlugin = function (args) {
         }
 
     }.bind(this));
-
-    // Schedulers
-    Scheduler.prototype.setButtonView = function (state) {
-        if (state === 'play' && !this.isPlaying) {
-            this.playButton.el.innerHTML = this.playButton.stopText;
-            this.isPlaying = true;
-        }
-        if (state === 'stop' && this.isPlaying) {
-            this.playButton.el.innerHTML = this.playButton.playText;
-            this.isPlaying = false;
-        }
-    };
-
-    Scheduler.prototype.toggleButtonView = function () {
-        if (this.isPlaying) {
-            this.setButtonView('stop');
-        }
-        else {
-            this.setButtonView('play');
-        }
-    };
 
     // Song length input
     this.songLengthElement.addEventListener('change', function (e) {
