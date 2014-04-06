@@ -66,6 +66,7 @@ Strip.prototype.getHash = function () {
 };
 Strip.prototype.setHash = function (hash) {
     this.notesHash = hash;
+    this.syncSort();
 };
 Strip.prototype.getNoteAtPosition = function (time, number) {
     for (var key in this.notesHash) {

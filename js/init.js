@@ -2,6 +2,8 @@ var initPlugin = function (args) {
 
 // TODO when the event is unattached, handle the bind
 
+    this.context = args.audioContext;
+    this.midiHandler = args.MIDIHandler;
     this.domEl = args.div;
     this.patternList = [];
     this.loop = false;
@@ -26,11 +28,17 @@ var initPlugin = function (args) {
 
     // Play element
     this.songScheduler = new Scheduler ({
-        el: this.playSongElement
-    });
+            el: this.playSongElement
+        },
+        this.midiHandler,
+        this.context
+    );
     this.patternScheduler = new Scheduler ({
-        el: this.playPatternElement
-    });
+            el: this.playPatternElement
+        },
+        this.midiHandler,
+        this.context
+    );
 
     this.playSongElement.addEventListener('click', function (e) {
        if (this.songScheduler.getPlayingState ()) {
@@ -44,14 +52,13 @@ var initPlugin = function (args) {
     }.bind(this));
 
     this.playPatternElement.addEventListener('click', function (e) {
-        if (this.patternScheduler.getPlayingState ()) {
-            this.playPatternElement.innerHTML = "Play &#9654;";
-            this.patternScheduler.stop();
-        }
-        else {
-            this.playPatternElement.innerHTML = "Stop &#9724;";
+        if (!this.patternScheduler.getPlayingState ()) {
+            this.playPatternElement.innerHTML = "Queue";
             var strip = this.rollView.getStrip();
-            this.patternScheduler.playPattern(strip);
+            this.patternScheduler.playPattern(strip, null, function () {
+                this.playPatternElement.innerHTML = "Play &#9654;";
+                this.patternScheduler.stop();
+            }.bind(this), this.bpm, null, null);
         }
 
     }.bind(this));
