@@ -1,1 +1,1011 @@
-define(["require","github:pieroxy/lz-string@master/libs/lz-string-1.3.3-min","./index.html!text","./style.css!text","#google Exo 2:400,200,300 !font"],function(a,b,c,d){var e={name:"Hya Sequencer",version:"0.0.1",hyaId:"HSEQ",ui:{type:"div",width:600,height:460,html:c,css:d}},f=function(a,b){var c,d,e=parseInt(document.defaultView.getComputedStyle(b,null).paddingLeft,10)||0,f=parseInt(document.defaultView.getComputedStyle(b,null).paddingTop,10)||0,g=parseInt(document.defaultView.getComputedStyle(b,null).borderLeftWidth,10)||0,h=parseInt(document.defaultView.getComputedStyle(b,null).borderTopWidth,10)||0,i=document.body.parentNode,j=i.offsetTop,k=i.offsetLeft,l=b,m=0,n=0;if("undefined"!=typeof l.offsetParent)do m+=l.offsetLeft,n+=l.offsetTop;while(l=l.offsetParent);m+=e+g+k,n+=f+h+j,c=a.pageX-m,d=a.pageY-n;var o=parseInt(document.defaultView.getComputedStyle(b,null).getPropertyValue("width"),10)||0,p=parseInt(document.defaultView.getComputedStyle(b,null).getPropertyValue("height"),10)||0,q=b.getAttribute("width"),r=b.getAttribute("height"),s=q/o,t=r/p;return c*=s,d*=t,{x:c,y:d}},g=0,h=function(a){var b=++g+"";return a?a+b:b},i=function(a,b,c,d){this.start=a,this.duration=b,this.number=c,this.id=d};i.prototype.setStart=function(a){this.start=a},i.prototype.setDuration=function(a){this.duration=a},i.prototype.setNumber=function(a){this.number=a};var j=function(){this.notesHash={},this.notesArray=[]};j.prototype.syncSort=function(){var a=[];for(var b in this.notesHash)a.push(b.id);a.sort(function(a,b){return a.start-b.start}),this.notesArray=a},j.prototype.addNote=function(a,b,c){var d=h();return this.notesHash[d]=new i(a,b,c,d),this.syncSort(),d},j.prototype.getNote=function(a){return this.notesHash[a]},j.prototype.removeNote=function(a){delete this.notesHash[a],this.syncSort()},j.prototype.resizeNote=function(a,b){this.notesHash[a].setDuration(b)},j.prototype.moveNote=function(a,b,c){null!==b&&(this.notesHash[a].setStart(b),this.syncSort()),null!==c&&this.notesHash[a].setNumber(c)},j.prototype.getOrdered=function(){return this.notesArray},j.prototype.getHash=function(){return this.notesHash},j.prototype.setHash=function(a){this.notesHash=a},j.prototype.getNoteAtPosition=function(a,b){for(var c in this.notesHash){var d=this.notesHash[c];if(d.number===b&&d.start<a&&d.start+d.duration>a)return d}};var k=1,l=.5,m=.25,n=function(a,b){this.name="",this.el=a,this.tw=a.width,this.th=a.height,this.ctx=a.getContext("2d"),this.down=!1,this.step=l,this.defaultDuration=k,this.delta=null,this.resizing=!1,this.moving=!1,this._renderBound=this._render.bind(this),this.strip=b,this.noteHeight=Math.round(this.th/60),this.noteWidth=this.tw/8,this.boundDownHandler=this.downHandler.bind(this),this.boundMoveHandler=this.moveHandler.bind(this),this.boundUpHandler=this.upHandler.bind(this),this.boundDblHandler=this.dblHandler.bind(this),a.addEventListener("mousedown",this.boundDownHandler),a.addEventListener("mousemove",this.boundMoveHandler),a.addEventListener("mouseup",this.boundUpHandler),a.addEventListener("dblclick",this.boundDblHandler),this.strip&&this.render()};n.prototype.setStrip=function(a){this.strip=a,this.render()},n.prototype.setStep=function(a){this.step=a},n.prototype.setDefaultDuration=function(a){this.defaultDuration=a},n.prototype._renderGrid=function(){var a=this.noteWidth*this.step;if(this.ctx.beginPath(),this.step)for(var b=0;b<=this.tw;b+=a)this.ctx.moveTo(b,0),this.ctx.lineTo(b,this.th);for(var c=0;c<=this.th;c+=this.noteHeight)this.ctx.moveTo(0,c),this.ctx.lineTo(this.tw,c);this.ctx.strokeStyle="rgba(255, 255, 255, 0.1)",this.ctx.stroke()},n.prototype._render=function(){var a=null,b=this.strip.getHash();this.ctx.fillStyle="rgb(30,30,30)",this.ctx.fillRect(0,0,this.tw,this.th),this._renderGrid();for(var c in b){var d=b[c],e=d.start*this.noteWidth,f=d.duration*this.noteWidth-1,g=this.th-d.number*this.noteHeight,h=this.noteHeight-1;this.selected&&d.id===this.selected?a={left:e,top:g,width:f,height:h}:(this.ctx.fillStyle="#FFC500",this.ctx.fillRect(e,g,f,h))}a&&(this.ctx.fillStyle="OrangeRed",this.ctx.fillRect(a.left,a.top,a.width,a.height))},n.prototype.render=function(){window.requestAnimationFrame(this._renderBound)},n.prototype.getPosFromEvent=function(a){var b=(f(a,this.el),a.offsetX/this.noteWidth),c=Math.ceil((this.th-a.offsetY)/this.noteHeight);return{start:b,number:c}},n.prototype.getNoteFromEvent=function(a){var b=this.getPosFromEvent(a);return this.strip.getNoteAtPosition(b.start,b.number)},n.prototype.downHandler=function(a){var b=!1,c=this.getNoteFromEvent(a);c?(this.selected=c.id,this.down=!0,b=!0):this.selected&&(this.selected=void 0,b=!0),b&&this.render()},n.prototype.moveHandler=function(a){{var b=!1;this.getNoteFromEvent(a)}if(this.down&&this.selected){console.log("bring the action!");var c=this.getPosFromEvent(a),d=this.strip.getNote(this.selected),e=c.start-d.start;if(!this.moving&&(this.resizing||e>.8*d.duration)){this.resizing=!0;var f=e;this.step&&(f=Math.round(f/this.step)*this.step),f<this.step&&(f=d.duration,b=!1),m/2>f&&(f=m/2),this.strip.resizeNote(this.selected,f),b=!0}else{this.moving=!0;var g={start:d.start,number:d.number};null===this.delta&&(this.delta=e),g.start=c.start-this.delta,this.step?(g.start=Math.round(g.start/this.step)*this.step,g.start!==d.start&&(b=!0)):b=!0,c.note!==d.number&&(g.number=c.number,b=!0),b&&this.strip.moveNote(this.selected,g.start,g.number)}}b&&this.render()},n.prototype.upHandler=function(a){var b=!1;this.down=!1,this.delta=null,this.resizing=!1,this.moving=!1;this.getNoteFromEvent(a);b&&this.render()},n.prototype.dblHandler=function(a){if(this.selected)this.strip.removeNote(this.selected),this.selected=void 0,this.render();else{var b=this.getPosFromEvent(a);this.step&&(b.start=Math.floor(b.start/this.step)*this.step),this.strip.addNote(b.start,this.defaultDuration,b.number),this.render()}},n.prototype.getState=function(){return{strip:this.strip,step:this.step,noteDur:this.defaultDuration}};var o=function(a,b,c){this.el=a,this.tw=a.width,this.th=a.height,this.ctx=a.getContext("2d"),this.minOct=b,this.octaves=c;for(var d=["B","A#","A","G#","G","F#","F","E","D#","D","C#","C"],e=12*c,f=0;e>f;f+=1){var g=d[f%12],h=b+(c-Math.floor(f/12))-1,i="#"===g.charAt(1);this.ctx.fillStyle=i?"black":"white";var j=this.tw,k=this.th/e,l=f*k,m=0;this.ctx.fillRect(m,l,j,k-1),this.ctx.fillStyle=i?"white":"black";var n=g+" "+h;this.ctx.font="12px 'Exo 2'",this.ctx.fillText(n,20,l+18)}},p=function(){this.controlData={cc21:[]},this.current="cc21"};p.prototype.getState=function(){return{controlData:this.controlData,current:this.current}},p.prototype.setState=function(a){this.controlData=a.controlData,this.current=a.current},p.prototype.getData=function(){return this.controlData[this.current]},p.prototype.setData=function(a){this.controlData[this.current]=a},p.prototype.getValue=function(a){return this.controlData[this.current][a]},p.prototype.setValue=function(a,b){this.controlData[this.current][a]=b},p.prototype.reset=function(){this.controlData[this.current]=[]},p.prototype.setCurrent=function(a){this.current=a,this.controlData[a]||(this.controlData[a]=[])},p.prototype.getCurrent=function(){return this.current};var q=function(a){this.el=a,this.tw=a.width,this.th=a.height,this.ctx=a.getContext("2d"),this.down=!1,this.controlModel=null,this.step=this.tw/32,this._renderBound=this._render.bind(this),this.boundDownHandler=this.downHandler.bind(this),this.boundMoveHandler=this.moveHandler.bind(this),this.boundUpHandler=this.upHandler.bind(this),a.addEventListener("mousedown",this.boundDownHandler),a.addEventListener("mousemove",this.boundMoveHandler),a.addEventListener("mouseup",this.boundUpHandler),this.controlModel&&this.render()};q.prototype.render=function(){window.requestAnimationFrame(this._renderBound)},q.prototype._render=function(){var a;this.ctx.fillStyle="rgb(20,20,20)",this.ctx.fillRect(0,0,this.tw,this.th),this.ctx.fillStyle="#80C5FF";for(var b=this.controlModel.getData(),c=0;c<b.length;c+=1)if(a=b[c]){var d=c*this.step,e=8,f=this.th-a/127*this.th,g=this.th-f;this.ctx.fillRect(d,f,e,g)}},q.prototype._calculate=function(a){var b=Math.floor(a.offsetX/this.step),c=Math.round((this.th-a.offsetY)/this.th*127);this.controlModel.setValue(b,c)},q.prototype.downHandler=function(a){this.down=!0,this._calculate(a),this.render()},q.prototype.upHandler=function(){this.down=!1},q.prototype.moveHandler=function(a){this.down&&(this._calculate(a),this.render())},q.prototype.setCurrent=function(a){this.controlModel.setCurrent(a),this.render()},q.prototype.resetCurrent=function(){this.controlModel.reset(),this.render()},q.prototype.setControlModel=function(a){this.controlModel=a,this.render()};var r=function(a,b){this.el=a,this.patternButtonCallback=b.patternButtonCallback,this.patterns=b.patterns,this._render(),this.boundDownHandlerDelegator=this._downHandlerDelegator.bind(this),a.addEventListener("mousedown",this.boundDownHandlerDelegator)};r.prototype.getPattern=function(a){return this.patterns[a]},r.prototype._downHandlerDelegator=function(a){if(a.target&&"BUTTON"==a.target.nodeName){var b=parseInt(a.target.classList[1].match(/\d+/g)[0]);this.patternButtonCallback(b)}},r.prototype._render=function(){for(var a="",b=0;b<this.patterns.length;b+=1)a+="<div class='pattern-item pattern-"+b+"'><span class='pattern-name'>"+this.patterns[b].name+"</span><span class='pattern-num'>"+this.patterns[b].channel+"</span><button class='edit edit-pattern-"+b+"''>Edit..</button></div>";this.el.innerHTML=a},r.prototype.removePattern=function(){},r.prototype.addPattern=function(){this.pattern.length+1};var s=function(a,b){this.data=[[]],this.el=a,this.ctx=a.getContext("2d"),this.patternN=b.patternN,this.songLen=b.songLen,this.patternH=23,this.patternW=90,this.timeTrackH=22,this.setDimensions(),this.inset=2,this._renderBound=this._render.bind(this),this.boundDownHandler=this.downHandler.bind(this),a.addEventListener("mousedown",this.boundDownHandler),this.render()};s.prototype.erase=function(){this.data=[[]]},s.prototype.setSongLen=function(a){this.songLen=a},s.prototype.setPatternNumber=function(a){this.patternN=a},s.prototype.getPatternPosFromEvent=function(a){if(a.offsetY>=this.th-this.timeTrackH)return null;var b=Math.floor(a.offsetX/this.patternW),c=Math.floor(a.offsetY/this.patternH);return{pattern:c,position:b}},s.prototype.setDimensions=function(){this.tw=this.el.width=this.songLen*this.patternW,this.th=this.el.height=this.patternN*this.patternH+this.timeTrackH},s.prototype.setState=function(a,b,c){return 1===arguments.length?void(this.data=arguments[0]):("undefined"==typeof this.data[a]&&(this.data[a]=[]),void(this.data[a][b]=c))},s.prototype.getState=function(a,b){return 0===arguments.length?this.data:"undefined"==typeof this.data[a]?void 0:this.data[a][b]},s.prototype.flipState=function(a,b){this.getState(a,b)?this.setState(a,b,void 0):this.setState(a,b,!0)},s.prototype.downHandler=function(a){var b=this.getPatternPosFromEvent(a);b&&(this.flipState(b.position,b.pattern),this.render())},s.prototype._render=function(){this.ctx.fillStyle="rgb(20,20,20)",this.ctx.fillRect(0,0,this.tw,this.th-this.timeTrackH),this.ctx.fillStyle="rgb(0,0,0)",this.ctx.fillRect(0,this.th-this.timeTrackH,this.tw,this.th),this.ctx.fillStyle="#80A500";for(var a=0;a<this.data.length;a+=1)if(!(a>this.songLen)&&this.data[a])for(var b=0;b<this.data[a].length;b+=1)if(!(b>this.patternN)&&this.getState(a,b)){var c=a*this.patternW,d=this.patternW-1,e=b*this.patternH,f=this.patternH-1;this.ctx.beginPath(),this.ctx.moveTo(c,e+this.inset),this.ctx.lineTo(c+this.inset,e),this.ctx.lineTo(c+d-this.inset,e),this.ctx.lineTo(c+d,e+this.inset),this.ctx.lineTo(c+d,e+f-this.inset),this.ctx.lineTo(c+d-this.inset,e+f),this.ctx.lineTo(c+this.inset,e+f),this.ctx.lineTo(c,e+f-this.inset),this.ctx.fill(),this.ctx.closePath()}this.ctx.strokeStyle="rgb(45, 45, 45)",this.ctx.fillStyle="rgb(200, 200, 200)",this.ctx.beginPath();for(var g=0,h=0;h<=this.tw;h+=this.patternW)this.ctx.moveTo(h,0),this.ctx.lineTo(h,this.th),this.ctx.font="12px 'Exo 2'",this.ctx.fillText(g,h+5,this.th-5),g+=2;this.ctx.stroke()},s.prototype.render=function(){window.requestAnimationFrame(this._renderBound)};var t=function(a){this.domEl=a.div,this.patternList=[],this.loop=!1,this.PATTERN_N=16,this.patternSequencerDiv=this.domEl.querySelector(".pattern-sequencer-main-div"),this.patternEditorDiv=this.domEl.querySelector(".pattern-editor-container"),this.backToSeqButton=this.domEl.querySelector(".back-to-seq"),this.patternMainLabel=this.domEl.querySelector(".pattern-main-label"),this.resetButton=this.domEl.querySelector(".reset-button"),this.controlSelector=this.domEl.querySelector(".control-selector"),this.toggleButton=this.domEl.querySelector(".toggle-loop"),this.toggleButton.addEventListener("click",function(){this.loop?(this.toggleButton.classList.remove("down"),this.loop=!1):(this.toggleButton.classList.add("down"),this.loop=!0)}.bind(this)),this.backToSeqButton.addEventListener("click",function(){this.patternSequencerDiv.classList.remove("hidden"),this.patternEditorDiv.classList.add("hidden")}.bind(this)),this.resetButton.addEventListener("click",function(){this.controlView.resetCurrent()}.bind(this)),this.controlSelector.addEventListener("change",function(a){this.controlView.setCurrent(a.target.value)}.bind(this)),this.psElement=this.domEl.querySelector(".pattern-sequencer"),this.ps=new s(this.psElement,{songLen:32,patternN:16});for(var b=0;b<this.PATTERN_N;b+=1)this.patternList.push({name:"Pattern "+(b+1),channel:1,strip:new j,controls:new p});this.setState=function(a){this.ps.setState(a.sequencer);for(var b=0;b<this.PATTERN_N;b+=1)this.patternList[b].strip.setHash(a.patternList[b].strip),this.patternList[b].controls.setState(a.patternList[b].controls)},a.initialState&&a.initialState.data&&this.setState(a.initialState.data),this.patternListElement=this.domEl.querySelector(".pattern-list"),this.pv=new r(this.patternListElement,{patternButtonCallback:function(a){var b=this.pv.getPattern(a);this.rollView.setStrip(b.strip),this.controlView.setControlModel(b.controls),this.controlSelector.value=b.controls.getCurrent(),this.patternMainLabel.innerHTML=b.name,this.patternSequencerDiv.classList.add("hidden"),this.patternEditorDiv.classList.remove("hidden")}.bind(this),patterns:this.patternList}),this.sheet=this.domEl.querySelector(".sheet"),this.snapMenu=this.domEl.querySelector(".snap"),this.durationMenu=this.domEl.querySelector(".newnote"),this.piano=this.domEl.querySelector(".piano"),this.controls=this.domEl.querySelector(".controls"),this.rollView=new n(this.sheet),this.snapMenu.addEventListener("change",function(a){this.rollView.setStep(parseFloat(a.target.value,10)),this.rollView.render()}.bind(this)),this.durationMenu.addEventListener("change",function(a){this.rollView.setDefaultDuration(parseFloat(a.target.value,10))}.bind(this)),this.pianoView=new o(this.piano,2,5),this.controlView=new q(this.controls),this.getState=function(){for(var a={sequencer:this.ps.getState(),patternList:[]},b=0;b<this.PATTERN_N;b+=1)a.patternList[b]={},a.patternList[b].strip=this.patternList[b].strip.getHash(),a.patternList[b].controls=this.patternList[b].controls.getState();return a};var c=function(){return{data:this.getState()}};a.hostInterface.setSaveState(c.bind(this)),a.hostInterface.setInstanceStatus("ready")};return{initPlugin:t,pluginConf:e}});
+define(['require',
+    'github:pieroxy/lz-string@master/libs/lz-string-1.3.3-min',
+    './index.html!text',
+    './style.css!text',
+    '#google Exo 2:400,200,300 !font'
+    ], function(require, LZString, htmlTemp, cssTemp) {
+
+    var pluginConf = {
+        name: "Hya Sequencer",
+        version: '0.0.1',
+        hyaId: 'HSEQ',
+        ui: {
+            type: 'div',
+            width: 600,
+            height: 460,
+            html: htmlTemp,
+            css: cssTemp
+        }
+    };
+var getEventPosition = function (e, obj) {
+    var stylePaddingLeft = parseInt(document.defaultView.getComputedStyle(obj, null).paddingLeft, 10) || 0;
+    var stylePaddingTop = parseInt(document.defaultView.getComputedStyle(obj, null).paddingTop, 10) || 0;
+    var styleBorderLeft = parseInt(document.defaultView.getComputedStyle(obj, null).borderLeftWidth, 10) || 0;
+    var styleBorderTop = parseInt(document.defaultView.getComputedStyle(obj, null).borderTopWidth, 10) || 0;
+    var html = document.body.parentNode;
+    var htmlTop = html.offsetTop;
+    var htmlLeft = html.offsetLeft;
+
+
+    var element = obj,
+        offsetX = 0,
+        offsetY = 0,
+        mx, my;
+
+    // Compute the total offset
+    if (typeof element.offsetParent !== 'undefined') {
+        do {
+            offsetX += element.offsetLeft;
+            offsetY += element.offsetTop;
+        } while ((element = element.offsetParent));
+    }
+
+    // Add padding and border style widths to offset
+    // Also add the <html> offsets in case there's a position:fixed bar
+    offsetX += stylePaddingLeft + styleBorderLeft + htmlLeft;
+    offsetY += stylePaddingTop + styleBorderTop + htmlTop;
+
+    mx = e.pageX - offsetX;
+    my = e.pageY - offsetY;
+
+    // this returns in element's css value, without borders
+    var cssWidth = parseInt(document.defaultView.getComputedStyle(obj, null).getPropertyValue("width"), 10) || 0;
+    var cssHeight = parseInt(document.defaultView.getComputedStyle(obj, null).getPropertyValue("height"), 10) || 0;
+
+    //var cssWidth  = obj.offsetWidth;
+    //var cssHeight = obj.offsetHeight;
+
+    var attrWidth = obj.getAttribute("width");
+    var attrHeight = obj.getAttribute("height");
+    var widthScale = attrWidth / cssWidth;
+    var heightScale = attrHeight / cssHeight;
+    //console.log ('*** SCALE', widthScale, heightScale);
+
+    mx *= widthScale;
+    my *= heightScale;
+
+    // We return a simple javascript object (a hash) with x and y defined
+    return {
+        x: mx,
+        y: my
+    };
+};
+var idCounter = 0,
+    uniqueId = function (prefix) {
+        var id = ++idCounter + '';
+        return prefix ? prefix + id : id;
+    };
+
+var Note = function (start, duration, number, id) {
+    this.start = start;
+    this.duration = duration;
+    this.number = number;
+    this.id = id;
+};
+Note.prototype.setStart = function (newStart) {
+    this.start = newStart;
+};
+Note.prototype.setDuration = function (newDuration) {
+    this.duration = newDuration;
+};
+Note.prototype.setNumber = function (newNumber) {
+    this.number = newNumber;
+};
+
+var Strip = function () {
+    this.notesHash = {};
+    this.notesArray = [];
+};
+
+Strip.prototype.syncSort = function () {
+    var sortable = [];
+    for (var note in this.notesHash) {
+        sortable.push(note.id);
+    }
+    sortable.sort(function (a, b) {
+        return a.start - b.start;
+    });
+    this.notesArray = sortable;
+};
+
+Strip.prototype.addNote = function (start, duration, number) {
+    var id = uniqueId();
+    this.notesHash[id] = new Note(start, duration, number, id);
+    this.syncSort();
+    return id;
+};
+
+Strip.prototype.getNote = function (id) {
+    return this.notesHash[id];
+};
+
+Strip.prototype.removeNote = function (id) {
+    delete this.notesHash[id];
+    this.syncSort();
+};
+
+Strip.prototype.resizeNote = function (id, duration) {
+    this.notesHash[id].setDuration(duration);
+};
+
+Strip.prototype.moveNote = function (id, start, number) {
+    if (start !== null) {
+        this.notesHash[id].setStart(start);
+        this.syncSort();
+    }
+    if (number !== null) {
+        this.notesHash[id].setNumber(number);
+    }
+};
+Strip.prototype.getOrdered = function () {
+    return this.notesArray;
+};
+Strip.prototype.getHash = function () {
+    return this.notesHash;
+};
+Strip.prototype.setHash = function (hash) {
+    this.notesHash = hash;
+};
+Strip.prototype.getNoteAtPosition = function (time, number) {
+    for (var key in this.notesHash) {
+        var note = this.notesHash[key];
+        if (note.number === number) {
+            if (note.start < time && (note.start + note.duration) > time) {
+                return note;
+            }
+        }
+    }
+};
+var SEMIBREVE = 4, // (bar)
+    MINIMA = 2, // (half bar)
+    SEMIMINIMA = 1, // (quarter bar)
+    CROMA = 0.5, // (1/8 bar)
+    SEMICROMA = 0.25; // (1/16 bar)
+
+var RollView = function (el, strip) {
+    this.name = "";
+    this.el = el;
+    this.tw = el.width;
+    this.th = el.height;
+    this.ctx = el.getContext("2d");
+    this.down = false;
+    this.step = CROMA;
+    this.defaultDuration = SEMIMINIMA;
+    this.delta = null;
+    this.resizing = false;
+    this.moving = false;
+    this._renderBound = this._render.bind(this);
+
+    this.strip = strip;
+    this.noteHeight = Math.round(this.th / (5 * 12));
+    this.noteWidth = this.tw / 8;
+    this.boundDownHandler = this.downHandler.bind(this);
+    this.boundMoveHandler = this.moveHandler.bind(this);
+    this.boundUpHandler = this.upHandler.bind(this);
+    this.boundDblHandler = this.dblHandler.bind(this);
+    this.boundMouseOutHandler = this.mouseOutHandler.bind(this);
+
+    el.addEventListener("mousedown", this.boundDownHandler);
+    el.addEventListener("mousemove", this.boundMoveHandler);
+    el.addEventListener("mouseup", this.boundUpHandler);
+    el.addEventListener("dblclick", this.boundDblHandler);
+    el.addEventListener('mouseout',  this.boundMouseOutHandler);
+
+    if (this.strip) {
+        this.render();
+    }
+
+};
+
+RollView.prototype.setStrip = function (strip) {
+    this.strip = strip;
+    this.render();
+};
+
+RollView.prototype.setStep = function (step) {
+    this.step = step;
+};
+
+RollView.prototype.setDefaultDuration = function (duration) {
+    this.defaultDuration = duration;
+};
+
+RollView.prototype._renderGrid = function () {
+
+    var gridGap = this.noteWidth * this.step;
+
+    this.ctx.beginPath();
+
+    if (this.step) {
+        // Draw the grid
+        for (var x = 0; x <= this.tw; x += gridGap) {
+            this.ctx.moveTo(x, 0);
+            this.ctx.lineTo(x, this.th);
+        }
+    }
+
+    // Draw the horizontal lines
+    for (var y = 0; y <= this.th; y += this.noteHeight) {
+        this.ctx.moveTo(0, y);
+        this.ctx.lineTo(this.tw, y);
+    }
+
+    this.ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
+    this.ctx.stroke();
+
+};
+
+RollView.prototype._render = function () {
+
+    var selectedNote = null;
+    var notes = this.strip.getHash();
+    this.ctx.fillStyle = 'rgb(30,30,30)';
+    this.ctx.fillRect(0, 0, this.tw, this.th);
+
+    this._renderGrid();
+
+    for (var n in notes) {
+
+        var note = notes[n];
+        var left = note.start * this.noteWidth;
+        var width = note.duration * this.noteWidth - 1;
+        var top = this.th - (note.number * this.noteHeight);
+        var height = this.noteHeight - 1;
+
+        if (this.selected && note.id === this.selected) {
+            // store it for later
+            selectedNote = {
+                left: left,
+                top: top,
+                width: width,
+                height: height
+            };
+        }
+        else {
+            this.ctx.fillStyle = '#FFC500';
+            this.ctx.fillRect(left, top, width, height);
+        }
+    }
+    // At the end, paint the selected note
+    if (selectedNote) {
+        this.ctx.fillStyle = 'OrangeRed';
+        this.ctx.fillRect(selectedNote.left, selectedNote.top, selectedNote.width, selectedNote.height);
+    }
+
+};
+
+RollView.prototype.render = function () {
+    window.requestAnimationFrame(this._renderBound);
+};
+
+RollView.prototype.getPosFromEvent = function (e) {
+    var pos = getEventPosition(e, this.el);
+    var start = e.offsetX / this.noteWidth;
+    var number = Math.ceil((this.th - e.offsetY) / this.noteHeight);
+    return {
+        start: start,
+        number: number
+    };
+};
+
+RollView.prototype.getNoteFromEvent = function (e) {
+
+    var pos = this.getPosFromEvent(e);
+
+    return this.strip.getNoteAtPosition(pos.start, pos.number);
+};
+
+RollView.prototype.downHandler = function (e) {
+
+    var dirty = false;
+
+    var selNote = this.getNoteFromEvent(e);
+
+    if (selNote) {
+        this.selected = selNote.id;
+        this.down = true;
+        dirty = true;
+    }
+    else {
+        if (this.selected) {
+            this.selected = undefined;
+            dirty = true;
+        }
+    }
+
+    if (dirty) {
+        this.render();
+    }
+};
+
+RollView.prototype.moveHandler = function (e) {
+    var dirty = false;
+
+    var selNote = this.getNoteFromEvent(e);
+
+    // If this is a dragging event and some note is selected
+    if (this.down && this.selected) {
+        console.log("bring the action!");
+
+        var pos = this.getPosFromEvent(e);
+
+        var oldNote = this.strip.getNote(this.selected);
+        var delta = pos.start - oldNote.start;
+
+        // If we're already resizing, or we're dragging for the first time on the last 20% of the note, do the resize
+        if (!this.moving && (this.resizing || delta > oldNote.duration * 0.8)) {
+            this.resizing = true;
+
+            var newDuration = delta;
+            if (this.step) {
+                newDuration = Math.round(newDuration / this.step) * this.step;
+            }
+
+            if (newDuration < this.step) {
+                newDuration = oldNote.duration;
+                dirty = false;
+            }
+            if (newDuration < (SEMICROMA / 2)) {
+                newDuration = SEMICROMA / 2;
+            }
+            this.strip.resizeNote(this.selected, newDuration);
+            dirty = true;
+
+        }
+        // else do the move
+        else {
+            this.moving = true;
+            var newNote = {
+                start: oldNote.start,
+                number: oldNote.number
+            };
+
+            if (this.delta === null) {
+                this.delta = delta;
+            }
+
+            // Change horizontal position
+            newNote.start = pos.start - this.delta;
+
+            if (this.step) {
+                newNote.start = Math.round(newNote.start / this.step) * this.step;
+                if (newNote.start !== oldNote.start) {
+                    dirty = true;
+                }
+            }
+            else {
+                dirty = true;
+            }
+
+            if (pos.note !== oldNote.number) {
+                // Change vertical position
+                newNote.number = pos.number;
+                dirty = true;
+            }
+
+            if (dirty) {
+                this.strip.moveNote(this.selected, newNote.start, newNote.number);
+            }
+        }
+
+    }
+
+    if (dirty) {
+        this.render();
+    }
+};
+
+RollView.prototype.upHandler = function (e) {
+    var dirty = false;
+
+    this.down = false;
+    this.delta = null;
+    this.resizing = false;
+    this.moving = false;
+
+    var selNote = this.getNoteFromEvent(e);
+
+    if (dirty) {
+        this.render();
+    }
+};
+
+RollView.prototype.dblHandler = function (e) {
+    if (this.selected) {
+        this.strip.removeNote(this.selected);
+        this.selected = undefined;
+        this.render();
+    }
+    else {
+        var newNote = this.getPosFromEvent(e);
+        if (this.step) {
+            newNote.start = Math.floor(newNote.start / this.step) * this.step;
+        }
+        this.strip.addNote(newNote.start, this.defaultDuration, newNote.number);
+        this.render();
+    }
+};
+
+RollView.prototype.mouseOutHandler = function (e) {
+    console.log ("Mouse out");
+    this.upHandler(e);
+};
+
+RollView.prototype.getState = function () {
+    return {
+        "strip": this.strip,
+        "step": this.step,
+        "noteDur": this.defaultDuration
+    }
+}
+var PianoView = function (el, minOct, octaves) {
+    this.el = el;
+    this.tw = el.width;
+    this.th = el.height;
+    this.ctx = el.getContext("2d");
+    this.minOct = minOct;
+    this.octaves = octaves;
+
+    var keyboardNotes = ["B", "A#", "A", "G#", "G", "F#", "F", "E", "D#", "D", "C#", "C"];
+
+    var nNotes = octaves * 12;
+
+    for (var i = 0; i < nNotes; i += 1) {
+
+        var noteName = keyboardNotes[i % 12];
+        var oct = minOct + (octaves - Math.floor(i / 12)) - 1;
+
+        var accident = (noteName.charAt(1) === "#");
+
+        // Draw the key
+        if (accident) {
+            this.ctx.fillStyle = "black";
+        }
+        else {
+            this.ctx.fillStyle = "white";
+        }
+
+        var width = this.tw;
+        var height = this.th / nNotes;
+        var top = i * height;
+        var left = 0;
+        this.ctx.fillRect(left, top, width, height - 1);
+
+        // Draw text
+        if (accident) {
+            this.ctx.fillStyle = "white";
+        }
+        else {
+            this.ctx.fillStyle = "black";
+        }
+
+        var noteString = noteName + " " + oct;
+        this.ctx.font = "12px 'Exo 2'";
+        this.ctx.fillText(noteString, 20, top + 18);
+    }
+
+};
+var ControlModel = function () {
+    this.controlData = {
+        "cc21": []
+    };
+    this.current = "cc21";
+};
+ControlModel.prototype.getState = function () {
+    return {
+        controlData: this.controlData,
+        current: this.current
+    };
+};
+ControlModel.prototype.setState = function (state) {
+    this.controlData = state.controlData;
+    this.current = state.current;
+};
+ControlModel.prototype.getData = function () {
+    return this.controlData[this.current];
+};
+ControlModel.prototype.setData = function (data) {
+    this.controlData[this.current] = data;
+};
+ControlModel.prototype.getValue = function (index) {
+    return this.controlData[this.current][index];
+};
+ControlModel.prototype.setValue = function (index, value) {
+    this.controlData[this.current][index] = value;
+};
+ControlModel.prototype.reset = function () {
+    this.controlData[this.current] = [];
+};
+ControlModel.prototype.setCurrent = function (current) {
+    this.current = current;
+    if (!this.controlData[current]) {
+        this.controlData[current] = [];
+    }
+};
+ControlModel.prototype.getCurrent = function () {
+    return this.current;
+};
+
+var ControlView = function (el) {
+    this.el = el;
+    this.tw = el.width;
+    this.th = el.height;
+    this.ctx = el.getContext("2d");
+    this.down = false;
+
+    this.controlModel = null;
+
+    this.step = this.tw / 32;
+
+    this._renderBound = this._render.bind(this);
+
+    this.boundDownHandler = this.downHandler.bind(this);
+    this.boundMoveHandler = this.moveHandler.bind(this);
+    this.boundUpHandler = this.upHandler.bind(this);
+    this.boundMouseOutHandler = this.mouseOutHandler.bind(this);
+
+    el.addEventListener("mousedown", this.boundDownHandler);
+    el.addEventListener("mousemove", this.boundMoveHandler);
+    el.addEventListener("mouseup", this.boundUpHandler);
+    el.addEventListener('mouseout',  this.boundMouseOutHandler);
+
+    if (this.controlModel) {
+        this.render();
+    }
+
+};
+
+ControlView.prototype.render = function () {
+    window.requestAnimationFrame(this._renderBound);
+};
+
+ControlView.prototype._render = function () {
+
+    var value;
+
+    this.ctx.fillStyle = 'rgb(20,20,20)';
+    this.ctx.fillRect(0, 0, this.tw, this.th);
+
+    this.ctx.fillStyle = '#80C5FF';
+
+    var data = this.controlModel.getData();
+
+    for (var i = 0; i < data.length; i += 1) {
+        value = data[i];
+        if (value) {
+            var left = i * this.step;
+            var width = 8;
+            var top = this.th - ((value / 127) * this.th);
+            var height = this.th - top;
+            this.ctx.fillRect(left, top, width, height);
+        }
+    }
+
+};
+
+ControlView.prototype._calculate = function (e) {
+
+    var bin = Math.floor(e.offsetX / this.step);
+    var value = Math.round(((this.th - e.offsetY) / this.th) * 127);
+
+    this.controlModel.setValue(bin, value);
+
+}
+
+ControlView.prototype.downHandler = function (e) {
+    this.down = true;
+
+    this._calculate(e);
+    this.render();
+};
+
+ControlView.prototype.upHandler = function () {
+    this.down = false;
+};
+
+ControlView.prototype.moveHandler = function (e) {
+    if (this.down) {
+        this._calculate(e);
+        this.render();
+    }
+};
+
+ControlView.prototype.mouseOutHandler = function (e) {
+    console.log ("Mouse out");
+    this.upHandler(e);
+};
+
+ControlView.prototype.setCurrent = function (current) {
+    this.controlModel.setCurrent(current);
+    this.render();
+};
+
+ControlView.prototype.resetCurrent = function (current) {
+    this.controlModel.reset();
+    this.render();
+};
+
+ControlView.prototype.setControlModel = function (cm) {
+    this.controlModel = cm;
+    this.render();
+};
+var PatternView = function (el, options) {
+    this.el = el;
+    this.patternButtonCallback = options.patternButtonCallback;
+    this.patterns = options.patterns;
+
+    this._render();
+
+    this.boundDownHandlerDelegator = this._downHandlerDelegator.bind(this);
+    el.addEventListener("mousedown", this.boundDownHandlerDelegator);
+
+};
+
+PatternView.prototype.getPattern = function (pattern) {
+    return this.patterns[pattern];
+};
+
+PatternView.prototype._downHandlerDelegator = function (e) {
+    if (e.target && e.target.nodeName == "BUTTON") {
+        // TODO maybe loop over the classes and use indexof to see if it's the right class
+        // TODO TODO TODO dataset API http://davidwalsh.name/element-dataset
+        // e.target.classList[1].regex = ["3"], for instance.
+        var patternNum = parseInt(e.target.classList[1].match(/\d+/g)[0]);
+        this.patternButtonCallback(patternNum);
+    }
+};
+
+PatternView.prototype._render = function () {
+
+    var html = "";
+    for (var i = 0; i < this.patterns.length; i += 1) {
+        html += "<div class='pattern-item pattern-" + i + "'><span class='pattern-name'>" + this.patterns[i].name + "</span>" + "<span class='pattern-num'>" + this.patterns[i].channel + "</span>" + "<button class='edit edit-pattern-" + i + "''>Edit..</button>" + "</div>";
+    }
+    this.el.innerHTML = html;
+};
+
+PatternView.prototype.removePattern = function (patternNumber) {
+    // Use slice
+};
+
+PatternView.prototype.addPattern = function () {
+    var patternNumber = this.pattern.length + 1;
+};
+var PatternSequencer = function (el, options) {
+
+    this.data = [
+        []
+    ];
+    this.el = el;
+    this.ctx = el.getContext("2d");
+    this.patternN = options.patternN;
+    this.songLen = options.songLen;
+    this.patternH = 23;
+    this.patternW = 90;
+    this.timeTrackH = 22;
+    this.setDimensions();
+
+    this.inset = 2;
+
+    this._renderBound = this._render.bind(this);
+    this.boundDownHandler = this.downHandler.bind(this);
+    el.addEventListener("mousedown", this.boundDownHandler);
+
+    this.render();
+
+};
+
+PatternSequencer.prototype.erase = function () {
+    this.data = [
+        []
+    ];
+};
+
+PatternSequencer.prototype.setSongLen = function (len) {
+    this.songLen = len;
+    this.setDimensions();
+    this.render();
+};
+
+PatternSequencer.prototype.getSongLen = function () {
+    return this.songLen;
+};
+
+
+PatternSequencer.prototype.setPatternNumber = function (patternN) {
+    this.patternN = patternN;
+};
+
+PatternSequencer.prototype.getPatternPosFromEvent = function (e) {
+    // Avoid clicks on the time tracker
+    if (e.offsetY >= (this.th - this.timeTrackH)) {
+        return null;
+    }
+    var position = Math.floor(e.offsetX / this.patternW);
+    var pattern = Math.floor(e.offsetY / this.patternH);
+    return {
+        pattern: pattern,
+        position: position
+    };
+};
+
+PatternSequencer.prototype.setDimensions = function () {
+    this.tw = this.el.width = this.songLen * this.patternW;
+    this.th = this.el.height = this.patternN * this.patternH + this.timeTrackH;
+};
+
+PatternSequencer.prototype.setState = function (x, y, val) {
+    if (arguments.length === 1) {
+        var state = arguments[0]
+        this.data = state.data;
+        if (state.songLen !== this.songLen) {
+            this.songLen = state.songLen;
+            this.setDimensions();
+        }
+        return;
+    }
+    if (typeof this.data[x] == "undefined") {
+        this.data[x] = [];
+    }
+    this.data[x][y] = val;
+};
+
+PatternSequencer.prototype.getState = function (x, y, val) {
+    if (arguments.length === 0) {
+        return {
+            data: this.data,
+            songLen: this.songLen
+        }
+    }
+    if (typeof this.data[x] == "undefined") {
+        return undefined;
+    }
+    return this.data[x][y];
+};
+
+PatternSequencer.prototype.flipState = function (x, y) {
+    if (!this.getState(x, y)) {
+        this.setState(x, y, true);
+    }
+    else {
+        this.setState(x, y, undefined);
+    }
+};
+
+PatternSequencer.prototype.downHandler = function (e) {
+    var patternPos = this.getPatternPosFromEvent(e);
+    if (!patternPos) {
+        return;
+    }
+    this.flipState(patternPos.position, patternPos.pattern);
+    this.render();
+};
+
+PatternSequencer.prototype._render = function () {
+
+    this.ctx.fillStyle = 'rgb(20,20,20)';
+    this.ctx.fillRect(0, 0, this.tw, this.th - this.timeTrackH);
+
+    this.ctx.fillStyle = 'rgb(0,0,0)';
+    this.ctx.fillRect(0, this.th - this.timeTrackH, this.tw, this.th);
+
+    this.ctx.fillStyle = '#80A500';
+
+    for (var i = 0; i < this.data.length; i += 1) {
+        if (i > this.songLen || !this.data[i]) continue;
+        for (var k = 0; k < this.data[i].length; k += 1) {
+            if (k > this.patternN) continue;
+            if (this.getState(i, k)) {
+                //Draw
+                var left = i * this.patternW;
+                var width = this.patternW - 1;
+                var top = k * this.patternH;
+                var height = this.patternH - 1;
+
+                this.ctx.beginPath();
+                this.ctx.moveTo(left, top + this.inset);
+                this.ctx.lineTo(left + this.inset, top);
+                this.ctx.lineTo(left + width - this.inset, top);
+                this.ctx.lineTo(left + width, top + this.inset);
+                this.ctx.lineTo(left + width, top + height - this.inset);
+                this.ctx.lineTo(left + width - this.inset, top + height);
+                this.ctx.lineTo(left + this.inset, top + height);
+                this.ctx.lineTo(left, top + height - this.inset);
+                this.ctx.fill();
+                this.ctx.closePath();
+            }
+        }
+    }
+
+    this.ctx.strokeStyle = 'rgb(45, 45, 45)';
+    this.ctx.fillStyle = 'rgb(200, 200, 200)'
+    // Render grid and text
+    this.ctx.beginPath();
+    var txt = 0;
+    for (var x = 0; x <= this.tw; x += this.patternW) {
+        // grid
+        this.ctx.moveTo(x, 0);
+        this.ctx.lineTo(x, this.th);
+
+        // text
+        this.ctx.font = "12px 'Exo 2'";
+        this.ctx.fillText(txt, x + 5, this.th - 5);
+        txt += 2;
+    }
+    this.ctx.stroke();
+};
+
+PatternSequencer.prototype.render = function () {
+    window.requestAnimationFrame(this._renderBound);
+};
+var initPlugin = function (args) {
+
+// TODO when the event is unattached, handle the bind
+
+    this.domEl = args.div;
+    this.patternList = [];
+    this.loop = false;
+    this.songLen = 16;
+
+// INIT
+    this.PATTERN_N = 16;
+
+// Get elements from the DOM
+    this.patternSequencerDiv = this.domEl.querySelector(".pattern-sequencer-main-div");
+    this.patternEditorDiv = this.domEl.querySelector(".pattern-editor-container");
+    this.backToSeqButton = this.domEl.querySelector(".back-to-seq");
+    this.patternMainLabel = this.domEl.querySelector(".pattern-main-label");
+    this.resetButton = this.domEl.querySelector(".reset-button");
+    this.controlSelector = this.domEl.querySelector(".control-selector");
+    this.toggleButton = this.domEl.querySelector(".toggle-loop");
+    this.songLengthElement = this.domEl.querySelector(".song-length");
+
+    this.songLengthElement.addEventListener('change', function (e) {
+        var sl = parseInt(e.target.value, 10);
+        if (sl) {
+            this.songLen = sl;
+            this.changeSongLength();
+        }
+        else {
+            this.changeSongLength({onlyChangeView: true});
+        }
+    }.bind(this));
+
+    this.changeSongLength = function (opt) {
+        if (opt && opt.syncView) {
+            this.songLengthElement.value = this.ps.getSongLen();
+            return;
+        }
+        if (this.ps.getSongLen() !== this.songLen) {
+            if (!opt || !opt.onlyChangeView) {
+                this.ps.setSongLen(this.songLen);
+            }
+            this.songLengthElement.value = this.songLen;
+        }
+    };
+
+    this.toggleButton.addEventListener("click", function () {
+        if (!this.loop) {
+            this.toggleButton.classList.add('down');
+            this.loop = true;
+        }
+        else {
+            this.toggleButton.classList.remove('down');
+            this.loop = false;
+        }
+    }.bind(this));
+
+    this.backToSeqButton.addEventListener("click", function () {
+        this.patternSequencerDiv.classList.remove("hidden");
+        this.patternEditorDiv.classList.add("hidden");
+    }.bind(this));
+
+    this.resetButton.addEventListener("click", function () {
+        this.controlView.resetCurrent();
+    }.bind(this));
+
+    this.controlSelector.addEventListener("change", function (e) {
+        this.controlView.setCurrent(e.target.value);
+    }.bind(this));
+
+// INIT SEQUENCER
+    this.psElement = this.domEl.querySelector(".pattern-sequencer");
+    this.ps = new PatternSequencer(this.psElement, {
+        songLen: this.songLen,
+        patternN: 16
+    });
+    this.changeSongLength();
+
+    // Generate the pattern list
+
+    for (var p = 0; p < this.PATTERN_N; p += 1) {
+        this.patternList.push({
+            name: "Pattern " + (p + 1),
+            channel: 1,
+            strip: new Strip(),
+            controls: new ControlModel()
+        });
+    }
+
+    this.setState = function (state) {
+
+        this.ps.setState(state.sequencer);
+
+        for (var p = 0; p < this.PATTERN_N; p += 1) {
+            this.patternList[p].strip.setHash(state.patternList[p].strip);
+            this.patternList[p].controls.setState(state.patternList[p].controls);
+        }
+    };
+
+    if (args.initialState && args.initialState.data) {
+        this.setState(args.initialState.data);
+    }
+
+    this.changeSongLength({syncView: true});
+
+    this.patternListElement = this.domEl.querySelector(".pattern-list");
+    this.pv = new PatternView(this.patternListElement, {
+        patternButtonCallback: function (pattern) {
+
+            var patternObj = this.pv.getPattern(pattern);
+            this.rollView.setStrip(patternObj.strip);
+
+            this.controlView.setControlModel(patternObj.controls);
+            this.controlSelector.value = patternObj.controls.getCurrent();
+
+            this.patternMainLabel.innerHTML = patternObj.name;
+
+            this.patternSequencerDiv.classList.add("hidden");
+            this.patternEditorDiv.classList.remove("hidden");
+        }.bind(this),
+        patterns: this.patternList
+    });
+
+// INIT PATTERN EDITOR
+    this.sheet = this.domEl.querySelector(".sheet");
+    this.snapMenu = this.domEl.querySelector(".snap");
+    this.durationMenu = this.domEl.querySelector(".newnote");
+    this.piano = this.domEl.querySelector(".piano");
+    this.controls = this.domEl.querySelector(".controls");
+
+    this.rollView = new RollView(this.sheet);
+    this.snapMenu.addEventListener("change", function (e) {
+        this.rollView.setStep(parseFloat(e.target.value, 10));
+        this.rollView.render();
+    }.bind(this));
+    this.durationMenu.addEventListener("change", function (e) {
+        this.rollView.setDefaultDuration(parseFloat(e.target.value, 10));
+    }.bind(this));
+
+    this.pianoView = new PianoView(this.piano, 2, 5);
+
+    this.controlView = new ControlView(this.controls);
+
+    this.getState = function () {
+        var state = {
+            sequencer: this.ps.getState(),
+            patternList: []
+        };
+
+        for (var p = 0; p < this.PATTERN_N; p += 1) {
+            state.patternList[p] = {};
+            state.patternList[p].strip = (this.patternList[p].strip.getHash());
+            state.patternList[p].controls = (this.patternList[p].controls.getState());
+        }
+
+        return state;
+    };
+
+    var saveState = function () {
+        return { data: this.getState() };
+    };
+    args.hostInterface.setSaveState (saveState.bind(this));
+
+    args.hostInterface.setInstanceStatus ('ready');
+};
+    return {
+        initPlugin: initPlugin,
+        pluginConf: pluginConf
+    };
+
+});

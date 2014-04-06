@@ -25,11 +25,13 @@ var RollView = function (el, strip) {
     this.boundMoveHandler = this.moveHandler.bind(this);
     this.boundUpHandler = this.upHandler.bind(this);
     this.boundDblHandler = this.dblHandler.bind(this);
+    this.boundMouseOutHandler = this.mouseOutHandler.bind(this);
 
     el.addEventListener("mousedown", this.boundDownHandler);
     el.addEventListener("mousemove", this.boundMoveHandler);
     el.addEventListener("mouseup", this.boundUpHandler);
     el.addEventListener("dblclick", this.boundDblHandler);
+    el.addEventListener('mouseout',  this.boundMouseOutHandler);
 
     if (this.strip) {
         this.render();
@@ -264,6 +266,11 @@ RollView.prototype.dblHandler = function (e) {
         this.strip.addNote(newNote.start, this.defaultDuration, newNote.number);
         this.render();
     }
+};
+
+RollView.prototype.mouseOutHandler = function (e) {
+    console.log ("Mouse out");
+    this.upHandler(e);
 };
 
 RollView.prototype.getState = function () {

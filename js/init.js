@@ -5,6 +5,7 @@ var initPlugin = function (args) {
     this.domEl = args.div;
     this.patternList = [];
     this.loop = false;
+    this.songLen = 16;
 
 // INIT
     this.PATTERN_N = 16;
@@ -17,6 +18,31 @@ var initPlugin = function (args) {
     this.resetButton = this.domEl.querySelector(".reset-button");
     this.controlSelector = this.domEl.querySelector(".control-selector");
     this.toggleButton = this.domEl.querySelector(".toggle-loop");
+    this.songLengthElement = this.domEl.querySelector(".song-length");
+
+    this.songLengthElement.addEventListener('change', function (e) {
+        var sl = parseInt(e.target.value, 10);
+        if (sl) {
+            this.songLen = sl;
+            this.changeSongLength();
+        }
+        else {
+            this.changeSongLength({onlyChangeView: true});
+        }
+    }.bind(this));
+
+    this.changeSongLength = function (opt) {
+        if (opt && opt.syncView) {
+            this.songLengthElement.value = this.ps.getSongLen();
+            return;
+        }
+        if (this.ps.getSongLen() !== this.songLen) {
+            if (!opt || !opt.onlyChangeView) {
+                this.ps.setSongLen(this.songLen);
+            }
+            this.songLengthElement.value = this.songLen;
+        }
+    };
 
     this.toggleButton.addEventListener("click", function () {
         if (!this.loop) {
@@ -45,9 +71,10 @@ var initPlugin = function (args) {
 // INIT SEQUENCER
     this.psElement = this.domEl.querySelector(".pattern-sequencer");
     this.ps = new PatternSequencer(this.psElement, {
-        songLen: 32,
+        songLen: this.songLen,
         patternN: 16
     });
+    this.changeSongLength();
 
     // Generate the pattern list
 
@@ -73,6 +100,8 @@ var initPlugin = function (args) {
     if (args.initialState && args.initialState.data) {
         this.setState(args.initialState.data);
     }
+
+    this.changeSongLength({syncView: true});
 
     this.patternListElement = this.domEl.querySelector(".pattern-list");
     this.pv = new PatternView(this.patternListElement, {

@@ -30,7 +30,14 @@ PatternSequencer.prototype.erase = function () {
 
 PatternSequencer.prototype.setSongLen = function (len) {
     this.songLen = len;
+    this.setDimensions();
+    this.render();
 };
+
+PatternSequencer.prototype.getSongLen = function () {
+    return this.songLen;
+};
+
 
 PatternSequencer.prototype.setPatternNumber = function (patternN) {
     this.patternN = patternN;
@@ -56,7 +63,12 @@ PatternSequencer.prototype.setDimensions = function () {
 
 PatternSequencer.prototype.setState = function (x, y, val) {
     if (arguments.length === 1) {
-        this.data = arguments[0];
+        var state = arguments[0]
+        this.data = state.data;
+        if (state.songLen !== this.songLen) {
+            this.songLen = state.songLen;
+            this.setDimensions();
+        }
         return;
     }
     if (typeof this.data[x] == "undefined") {
@@ -67,7 +79,10 @@ PatternSequencer.prototype.setState = function (x, y, val) {
 
 PatternSequencer.prototype.getState = function (x, y, val) {
     if (arguments.length === 0) {
-        return this.data;
+        return {
+            data: this.data,
+            songLen: this.songLen
+        }
     }
     if (typeof this.data[x] == "undefined") {
         return undefined;

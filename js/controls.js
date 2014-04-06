@@ -55,10 +55,12 @@ var ControlView = function (el) {
     this.boundDownHandler = this.downHandler.bind(this);
     this.boundMoveHandler = this.moveHandler.bind(this);
     this.boundUpHandler = this.upHandler.bind(this);
+    this.boundMouseOutHandler = this.mouseOutHandler.bind(this);
 
     el.addEventListener("mousedown", this.boundDownHandler);
     el.addEventListener("mousemove", this.boundMoveHandler);
     el.addEventListener("mouseup", this.boundUpHandler);
+    el.addEventListener('mouseout',  this.boundMouseOutHandler);
 
     if (this.controlModel) {
         this.render();
@@ -119,6 +121,11 @@ ControlView.prototype.moveHandler = function (e) {
         this._calculate(e);
         this.render();
     }
+};
+
+ControlView.prototype.mouseOutHandler = function (e) {
+    console.log ("Mouse out");
+    this.upHandler(e);
 };
 
 ControlView.prototype.setCurrent = function (current) {
