@@ -11,7 +11,7 @@ Scheduler.prototype.getPlayingState = function () {
     return this.isPlaying;
 };
 
-Scheduler.prototype.playSong = function (song, isLoop, endCallback, bpm) {
+Scheduler.prototype.playSong = function (song, isLoop, endCallback, bpm, patternList) {
     console.log ("Play Song");
     this.isPlaying = true;
     // For every column
@@ -23,11 +23,13 @@ Scheduler.prototype.playSong = function (song, isLoop, endCallback, bpm) {
                 var row = song.data[y][x];
                 if (row) {
                     console.log("Playing #" + y + " of pattern " + x);
+                    var pattern = patternList[x];
+                    this.playPattern(pattern.strip, pattern.controls, null, bpm, pattern.channel);
                 }
             }
         }
     }
-};
+}.bind(this);
 
 Scheduler.prototype.playPattern = function (strip, controls, endCallback, bpm, channel) {
     console.log ("Play Pattern");
