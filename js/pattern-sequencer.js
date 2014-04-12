@@ -77,7 +77,7 @@ PatternSequencer.prototype.setState = function (x, y, val) {
     this.data[x][y] = val;
 };
 
-PatternSequencer.prototype.getState = function (x, y, val) {
+PatternSequencer.prototype.getState = function (x, y) {
     if (arguments.length === 0) {
         return {
             data: this.data,

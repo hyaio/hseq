@@ -53,7 +53,7 @@ RollView.prototype.setStrip = function (strip) {
     this.render();
 };
 
-RollView.prototype.getStrip = function (strip) {
+RollView.prototype.getStrip = function () {
     return this.strip;
 };
 

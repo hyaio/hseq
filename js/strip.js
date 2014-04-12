@@ -1,9 +1,3 @@
-var idCounter = 0,
-    uniqueId = function (prefix) {
-        var id = ++idCounter + '';
-        return prefix ? prefix + id : id;
-    };
-
 var createNote = function (start, duration, number, id) {
     return {
         start: start,
@@ -16,6 +10,11 @@ var createNote = function (start, duration, number, id) {
 var Strip = function () {
     this.notesHash = {};
     this.notesArray = [];
+    this.idCounter = 0;
+};
+
+Strip.prototype.uniqueId = function () {
+    return ++this.idCounter + '';
 };
 
 Strip.prototype.syncSort = function () {
@@ -30,7 +29,7 @@ Strip.prototype.syncSort = function () {
 };
 
 Strip.prototype.addNote = function (start, duration, number) {
-    var id = uniqueId();
+    var id = this.uniqueId();
     this.notesHash[id] = createNote(start, duration, number, id);
     this.syncSort();
     return id;
@@ -67,6 +66,14 @@ Strip.prototype.getHash = function () {
 Strip.prototype.setHash = function (hash) {
     this.notesHash = hash;
     this.syncSort();
+    var maxID = -1;
+    for (var note in this.notesHash) {
+        var id = this.notesHash[note].id;
+        if (maxID < id) {
+            maxID = id;
+        }
+        this.idCounter = maxID + 1;
+    }
 };
 Strip.prototype.getNoteAtPosition = function (time, number) {
     for (var key in this.notesHash) {

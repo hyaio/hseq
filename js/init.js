@@ -59,7 +59,9 @@ var initPlugin = function (args) {
                function () {
                    this.playSongElement.innerHTML = "Play &#9654;";
                }.bind(this),
-               this.bpm
+               this.bpm,
+               this.patternList,
+               this.pv
             );
        }
     }.bind(this));
