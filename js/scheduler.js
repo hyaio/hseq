@@ -13,7 +13,7 @@ Scheduler.prototype.getPlayingState = function () {
 
 Scheduler.prototype.schedulerPatternHelper = function (pattern, controls, cb, bpm, ch, nPattern) {
     var self = this;
-    var beatTime = (60 / bpm) * 2;
+    var beatTime = (60 / bpm) * 8;
 
     setTimeout(function () {
         self.playPattern(pattern.strip, null, null, bpm, ch, beatTime * nPattern + SCHED_DELAY);
@@ -50,26 +50,53 @@ Scheduler.prototype.playPattern = function (strip, controls, endCallback, bpm, c
     if (!startTime) {
         timeNow = this.context.currentTime + SCHED_DELAY;
     }
-    var quarterTime = 60 / bpm / 4;
+    var quarterTime = 60 / bpm;
 
     for (var note in ordered) {
         var n = ordered[note];
         var msgOn = {
             type: "noteon",
             channel: channel,
-            pitch: n.number,
+            pitch: n.number + 24,
             velocity: 127
         };
         var msgOff = {
             type: "noteoff",
             channel: channel,
-            pitch: n.number,
+            pitch: n.number + 24,
             velocity: 127
         };
         var whenOn = timeNow + (n.start * quarterTime);
         var whenOff = whenOn + (n.duration * quarterTime);
+        console.log ("Note starts at:", whenOn, "stops at:", whenOff);
         this.midiHandler.sendMIDIMessage (msgOn, whenOn);
         this.midiHandler.sendMIDIMessage (msgOff, whenOff);
+    }
+
+
+    for (var i = 0; i < 32; i+=1) {
+
+        var msgArray = [];
+
+        for (var controller in controls) {
+            if (controller.indexOf('cc') === 0) {
+                var cc = parseInt(controller.substr(2, 4), 10);
+                var value = controls[controller][i];
+                if (typeof value !== "undefined") {
+                    msgArray.push( {
+                        type: "controlchange",
+                        channel: channel,
+                        control: cc,
+                        value: value
+                    });
+                }
+            }
+        }
+        var timeCC =  (quarterTime / 4) * i + timeNow;
+        if (msgArray.length) {
+            this.midiHandler.sendMIDIMessage(msgArray, timeCC);
+            console.log("sending", msgArray, "number", i,  "at", timeCC);
+        }
     }
 
     if (typeof endCallback === 'function') {
