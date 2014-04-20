@@ -174,7 +174,7 @@ input {
 
 .pattern-sequencer-container {
     overflow: hidden;
-    overflow-x: scroll;
+    overflow-x: auto;
     height: 412px;
     background-color: rgb(22, 22, 22);
 }
@@ -216,7 +216,7 @@ input {
 }
 
 .pattern-sequencer-container canvas {
-    margin-left: 160px;
+    margin-left: 155px;
 }
 
 .control-bar {
