@@ -1,27 +1,41 @@
-var SCHED_DELAY = 0.4;
+var self, SCHED_DELAY = 0.4;
 
 var Scheduler = function (playButton, midiHandler, context) {
     this.isPlaying = false;
     this.playButton = playButton;
     this.midiHandler = midiHandler;
     this.context = context;
+    self = this;
 };
 
 Scheduler.prototype.getPlayingState = function () {
-    return this.isPlaying;
+    /*return this.isPlaying;*/
+    return false;
 };
 
-Scheduler.prototype.schedulerPatternHelper = function (pattern, controls, cb, bpm, ch, nPattern) {
-    var self = this;
+Scheduler.prototype.clearTimeouts = function (index) {
+    for (var i = 0; i < this.timeoutArray.length; i += 1) {
+        clearTimeout(this.timeoutArray[i]);
+    }
+    this.timeoutArray = [];
+};
+
+Scheduler.prototype.schedulerPatternHelper = function (pattern, cb, bpm, ch, nPattern) {
     var beatTime = (60 / bpm) * 8;
 
-    setTimeout(function () {
-        self.playPattern(pattern.strip, null, null, bpm, ch, beatTime * nPattern + SCHED_DELAY);
-    }, beatTime * 1000);
+    var schedule_when = ((beatTime * nPattern) / 2) * 1000;
+    var beat_start = beatTime * nPattern + SCHED_DELAY + this.context.currentTime;
+
+    this.timeoutArray = [];
+
+    this.timeoutArray[nPattern] = setTimeout(function () {
+        self.playPattern(pattern.strip, pattern.controls.controlData, cb, bpm, ch, beat_start);
+    }, schedule_when);
 };
 
 Scheduler.prototype.playSong = function (song, isLoop, endCallback, bpm, patternList, patternView) {
     console.log ("Play Song");
+    
     this.isPlaying = true;
     // For every column
     for (var y = 0; y < song.songLen; y+=1) {
@@ -31,12 +45,17 @@ Scheduler.prototype.playSong = function (song, isLoop, endCallback, bpm, pattern
                 // Play the row
                 var row = song.data[y][x];
                 if (row) {
-                    console.log("Playing #" + y + " of pattern " + x);
-                    //this.playPattern(row.strip, null, null, bpm, row.channel);
-                    this.schedulerPatternHelper (patternView.getPattern(x), null, null, bpm, patternList[x].channel, y);
+                    //console.log("Playing #" + y + " of pattern " + x);
+                    this.schedulerPatternHelper (patternView.getPattern(x), countPlayed, bpm, patternList[x].channel, y);
                 }
             }
         }
+    }
+
+    if (typeof endCallback === 'function') {
+        // TODO IF NOT LOOP
+        var beatTime = (60 / bpm) * 8;
+        setTimeout(endCallback, beatTime * song.songLen * 1000);
     }
 };
 
@@ -45,11 +64,12 @@ Scheduler.prototype.playPattern = function (strip, controls, endCallback, bpm, c
     this.isPlaying = true;
     var ordered = strip.getOrdered();
 
-    var timeNow = this.context.currentTime + startTime;
+    var timeNow = startTime;
 
     if (!startTime) {
         timeNow = this.context.currentTime + SCHED_DELAY;
     }
+
     var quarterTime = 60 / bpm;
 
     for (var note in ordered) {
@@ -68,7 +88,7 @@ Scheduler.prototype.playPattern = function (strip, controls, endCallback, bpm, c
         };
         var whenOn = timeNow + (n.start * quarterTime);
         var whenOff = whenOn + (n.duration * quarterTime);
-        console.log ("Note starts at:", whenOn, "stops at:", whenOff);
+        //console.log ("Note starts at:", whenOn, "stops at:", whenOff);
         this.midiHandler.sendMIDIMessage (msgOn, whenOn);
         this.midiHandler.sendMIDIMessage (msgOff, whenOff);
     }
@@ -95,12 +115,12 @@ Scheduler.prototype.playPattern = function (strip, controls, endCallback, bpm, c
         var timeCC =  (quarterTime / 4) * i + timeNow;
         if (msgArray.length) {
             this.midiHandler.sendMIDIMessage(msgArray, timeCC);
-            console.log("sending", msgArray, "number", i,  "at", timeCC);
+            //console.log("sending", msgArray, "number", i,  "at", timeCC);
         }
     }
 
     if (typeof endCallback === 'function') {
-        setTimeout(endCallback, quarterTime * 1000);
+        setTimeout(endCallback, quarterTime * 8 * 1000);
     }
 
 };
