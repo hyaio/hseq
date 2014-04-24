@@ -1,61 +1,58 @@
 var self, SCHED_DELAY = 0.4;
 
 var Scheduler = function (playButton, midiHandler, context) {
-    this.isPlaying = false;
-    this.playButton = playButton;
     this.midiHandler = midiHandler;
     this.context = context;
     self = this;
 };
 
-Scheduler.prototype.getPlayingState = function () {
-    /*return this.isPlaying;*/
-    return false;
-};
-
-Scheduler.prototype.clearTimeouts = function (index) {
-    for (var i = 0; i < this.timeoutArray.length; i += 1) {
-        clearTimeout(this.timeoutArray[i]);
-    }
-    this.timeoutArray = [];
-};
-
-Scheduler.prototype.schedulerPatternHelper = function (pattern, cb, bpm, ch, nPattern) {
-    var beatTime = (60 / bpm) * 8;
-
-    var schedule_when = ((beatTime * nPattern) / 2) * 1000;
-    var beat_start = beatTime * nPattern + SCHED_DELAY + this.context.currentTime;
-
-    this.timeoutArray = [];
-
-    this.timeoutArray[nPattern] = setTimeout(function () {
-        self.playPattern(pattern.strip, pattern.controls.controlData, cb, bpm, ch, beat_start);
-    }, schedule_when);
+Scheduler.prototype.clearTimeouts = function () {
+    //clearTimeout(this.scheduleTimeout);
+    this.stopped = true;
+    clearTimeout(this.endTimeout);
 };
 
 Scheduler.prototype.playSong = function (song, isLoop, endCallback, bpm, patternList, patternView) {
     console.log ("Play Song");
-    
-    this.isPlaying = true;
-    // For every column
-    for (var y = 0; y < song.songLen; y+=1) {
-        // Take every row
-        if (song.data[y]) {
-            for (var x = 0; x < song.data[y].length; x += 1) {
-                // Play the row
-                var row = song.data[y][x];
-                if (row) {
-                    //console.log("Playing #" + y + " of pattern " + x);
-                    this.schedulerPatternHelper (patternView.getPattern(x), countPlayed, bpm, patternList[x].channel, y);
-                }
-            }
+
+    var beatTime = (60 / bpm) * 8;
+
+    var y = 0;
+    var wait = false;
+
+    var schedule = function () {
+        console.log ("Scheduling for", y);
+        if (this.stopped) {
+            this.stopped = false;
+            wait = true;
+            console.log ("Wait state");
+            return;
         }
-    }
+
+        // TODO IF NOT LOOP
+        if (y === song.songLen) {
+            console.log ("Finished by itself");
+            endCallback ();
+            return;
+        }
+        var beat_start = SCHED_DELAY + this.context.currentTime;
+        for (var x = 0; x < song.data[y].length; x += 1) {
+            self.playPattern(patternView.getPattern(x).strip, patternView.getPattern(x).controls.controlData, null, bpm, patternList[x].channel, beat_start);
+        }
+
+        y += 1;
+
+        console.log ("reScheduling in", beatTime);
+        this.scheduleTimeout = setTimeout(schedule, beatTime * 1000);
+
+    }.bind(this);
+
+    schedule();
 
     if (typeof endCallback === 'function') {
         // TODO IF NOT LOOP
         var beatTime = (60 / bpm) * 8;
-        setTimeout(endCallback, beatTime * song.songLen * 1000);
+        this.endTimeout = setTimeout(endCallback, beatTime * song.songLen * 1000);
     }
 };
 
@@ -125,6 +122,7 @@ Scheduler.prototype.playPattern = function (strip, controls, endCallback, bpm, c
 
 };
 
-Scheduler.prototype.stop = function () {
-    this.isPlaying = false;
+Scheduler.prototype.stop = function (cb) {
+    this.clearTimeouts();
+    cb();
 };

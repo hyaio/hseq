@@ -9,6 +9,7 @@ var initPlugin = function (args) {
     this.loop = false;
     this.songLen = 16;
     this.bpm = 90;
+    this.playing  = false;
 
 // INIT
     this.PATTERN_N = 16;
@@ -47,17 +48,24 @@ var initPlugin = function (args) {
     );
 
     this.playSongElement.addEventListener('click', function (e) {
-       if (this.songScheduler.getPlayingState ()) {
-           this.playSongElement.innerHTML = "Play &#9654;";
-           this.songScheduler.stop();
+       if (this.playing) {
+           this.playing = false;
+           this.playSongElement.innerHTML = "Wait";
+           this.songScheduler.stop(function () {
+               this.playSongElement.innerHTML = "Play &#9654;";
+           }.bind(this));
        }
        else {
+           this.playing = true;
            this.playSongElement.innerHTML = "Stop &#9724;";
            this.songScheduler.playSong(
                this.ps.getState(),
                this.loop,
                function () {
-                   this.playSongElement.innerHTML = "Play &#9654;";
+                   if (this.playing) {
+                       this.playing = false;
+                       this.playSongElement.innerHTML = "Play &#9654;";
+                   }
                }.bind(this),
                this.bpm,
                this.patternList,
@@ -67,18 +75,18 @@ var initPlugin = function (args) {
     }.bind(this));
 
     this.playPatternElement.addEventListener('click', function (e) {
-        if (!this.patternScheduler.getPlayingState ()) {
-            this.playPatternElement.innerHTML = "Queue";
-            var strip = this.rollView.getStrip();
-            this.patternScheduler.playPattern(strip,
-                this.patternList[this.currentPattern].controls.getState().controlData,
-                function () {
-                    this.playPatternElement.innerHTML = "Play &#9654;";
-                    this.patternScheduler.stop();
-                }.bind(this),
-                this.bpm,
-                this.patternList[this.currentPattern].channel);
-        }
+
+        this.playPatternElement.innerHTML = "Queue";
+        var strip = this.rollView.getStrip();
+        this.patternScheduler.playPattern(strip,
+            this.patternList[this.currentPattern].controls.getState().controlData,
+            function () {
+                this.playPatternElement.innerHTML = "Play &#9654;";
+                this.patternScheduler.stop();
+            }.bind(this),
+            this.bpm,
+            this.patternList[this.currentPattern].channel);
+
 
     }.bind(this));
 
