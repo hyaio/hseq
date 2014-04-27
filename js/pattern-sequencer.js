@@ -116,7 +116,7 @@ PatternSequencer.prototype._render = function () {
     this.ctx.fillStyle = 'rgb(0,0,0)';
     this.ctx.fillRect(0, this.th - this.timeTrackH, this.tw, this.th);
 
-    this.ctx.fillStyle = '#80A500';
+    this.ctx.fillStyle = '#2FED9B';
 
     for (var i = 0; i < this.data.length; i += 1) {
         if (i > this.songLen || !this.data[i]) continue;

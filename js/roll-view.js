@@ -282,7 +282,6 @@ RollView.prototype.dblHandler = function (e) {
 };
 
 RollView.prototype.mouseOutHandler = function (e) {
-    console.log ("Mouse out");
     this.upHandler(e);
 };
 

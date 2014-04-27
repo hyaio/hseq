@@ -252,6 +252,10 @@ input {
     width: 5%;
 }
 
+.inputs {
+    height: 32px;
+}
+
 .inputs button {
     position: relative;
 }

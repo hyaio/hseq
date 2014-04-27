@@ -7,9 +7,13 @@ var Scheduler = function (playButton, midiHandler, context) {
 };
 
 Scheduler.prototype.clearTimeouts = function () {
-    //clearTimeout(this.scheduleTimeout);
+    // Waiting state
     this.stopped = true;
     clearTimeout(this.endTimeout);
+};
+
+Scheduler.prototype.setLoop = function (loop) {
+    this.loop = loop;
 };
 
 Scheduler.prototype.playSong = function (song, isLoop, endCallback, bpm, patternList, patternView) {
@@ -18,41 +22,54 @@ Scheduler.prototype.playSong = function (song, isLoop, endCallback, bpm, pattern
     var beatTime = (60 / bpm) * 8;
 
     var y = 0;
-    var wait = false;
 
     var schedule = function () {
         console.log ("Scheduling for", y);
         if (this.stopped) {
             this.stopped = false;
-            wait = true;
-            console.log ("Wait state");
+            console.log ("Stopped state");
+            if (typeof endCallback === 'function') {
+                endCallback();
+            }
             return;
         }
 
-        // TODO IF NOT LOOP
         if (y === song.songLen) {
-            console.log ("Finished by itself");
-            endCallback ();
-            return;
+            if (!this.loop) {
+                console.log("Finished by itself");
+                endCallback();
+                return;
+            }
+            else {
+                y = 0;
+            }
         }
         var beat_start = SCHED_DELAY + this.context.currentTime;
-        for (var x = 0; x < song.data[y].length; x += 1) {
-            self.playPattern(patternView.getPattern(x).strip, patternView.getPattern(x).controls.controlData, null, bpm, patternList[x].channel, beat_start);
+        if (song.data[y]) {
+            for (var x = 0; x < song.data[y].length; x += 1) {
+                if (song.data[y][x]) {
+                    self.playPattern(
+                        patternView.getPattern(x).strip,
+                        patternView.getPattern(x).controls.controlData,
+                        null, bpm, patternList[x].channel, beat_start);
+                }
+            }
         }
 
         y += 1;
 
         console.log ("reScheduling in", beatTime);
-        this.scheduleTimeout = setTimeout(schedule, beatTime * 1000);
+        setTimeout(schedule, beatTime * 1000);
 
     }.bind(this);
 
     schedule();
 
     if (typeof endCallback === 'function') {
-        // TODO IF NOT LOOP
-        var beatTime = (60 / bpm) * 8;
-        this.endTimeout = setTimeout(endCallback, beatTime * song.songLen * 1000);
+        if (!this.loop) {
+            var beatTime = (60 / bpm) * 8;
+            this.endTimeout = setTimeout(endCallback, beatTime * song.songLen * 1000);
+        }
     }
 };
 
@@ -68,20 +85,29 @@ Scheduler.prototype.playPattern = function (strip, controls, endCallback, bpm, c
     }
 
     var quarterTime = 60 / bpm;
+    var vel = 95;
 
     for (var note in ordered) {
         var n = ordered[note];
+
+        /* Calculate velocity */
+        var velIndex = Math.floor(n.start / SEMICROMA);
+
+        if (controls.velocity && (typeof controls.velocity[velIndex] !=="undefined")) {
+            vel = controls.velocity[velIndex];
+        }
+
         var msgOn = {
             type: "noteon",
             channel: channel,
             pitch: n.number + 24,
-            velocity: 127
+            velocity: vel
         };
         var msgOff = {
             type: "noteoff",
             channel: channel,
             pitch: n.number + 24,
-            velocity: 127
+            velocity: vel
         };
         var whenOn = timeNow + (n.start * quarterTime);
         var whenOff = whenOn + (n.duration * quarterTime);
@@ -122,7 +148,6 @@ Scheduler.prototype.playPattern = function (strip, controls, endCallback, bpm, c
 
 };
 
-Scheduler.prototype.stop = function (cb) {
+Scheduler.prototype.stop = function () {
     this.clearTimeouts();
-    cb();
 };

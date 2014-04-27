@@ -24,6 +24,11 @@ module.exports = function(grunt) {
                 dest: 'dist/script.js'
             }
         },
+        removelogging: {
+            dist: {
+                src: "dist/script.js" // Overwriting
+            }
+        },
         uglify: {
             dist_js: {
                 files: {
@@ -37,25 +42,17 @@ module.exports = function(grunt) {
                 dest: 'dist/style.css'
             }
         },
-        htmlmin: {                                       // Task
-            dist: {                                      // Target
-                options: {                                 // Target options
+        htmlmin: {                                          // Task
+            dist: {                                         // Target
+                options: {                                  // Target options
                     removeComments: true,
                     collapseWhitespace: true
                 },
                 files: {                                   // Dictionary of files
-                    'dist/index.html': 'html/index.html'  //dest: src
+                    'dist/index.html': 'html/index.html'    //dest: src
                 }
             }
-        }/*,
-        copy: {
-            main: {
-                files: [
-                    // includes files within path
-                    {expand: true, flatten: true, src: ['css/*', 'html/*'], dest: 'dist/', filter: 'isFile'}
-                ]
-            }
-        }*/
+        }
     });
 
     grunt.loadNpmTasks('grunt-contrib-concat');
@@ -63,9 +60,10 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-uglify');
     grunt.loadNpmTasks('grunt-contrib-cssmin');
     grunt.loadNpmTasks('grunt-contrib-htmlmin');
+    grunt.loadNpmTasks("grunt-remove-logging");
 
     // Default task(s).
-    grunt.registerTask('default', ['concat', /*'copy',*/ 'uglify', 'cssmin', 'htmlmin']);
+    grunt.registerTask('default', ['concat', 'removelogging', 'uglify', 'cssmin', 'htmlmin']);
     grunt.registerTask('nomin', ['concat', 'cssmin', 'htmlmin']);
 
 };

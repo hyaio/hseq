@@ -124,7 +124,6 @@ ControlView.prototype.moveHandler = function (e) {
 };
 
 ControlView.prototype.mouseOutHandler = function (e) {
-    console.log ("Mouse out");
     this.upHandler(e);
 };
 
