@@ -100,13 +100,13 @@ Scheduler.prototype.playPattern = function (strip, controls, endCallback, bpm, c
         var msgOn = {
             type: "noteon",
             channel: channel,
-            pitch: n.number + 24,
+            pitch: n.number + 23,
             velocity: vel
         };
         var msgOff = {
             type: "noteoff",
             channel: channel,
-            pitch: n.number + 24,
+            pitch: n.number + 23,
             velocity: vel
         };
         var whenOn = timeNow + (n.start * quarterTime);
