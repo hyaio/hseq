@@ -75,6 +75,9 @@ var initPlugin = function (args) {
                 function () {
                     this.playing = false;
                     this.playPatternElement.innerHTML = "Play &#9654;";
+                    if (this.playSongElement.innerHTML.indexOf("Wait") === 0) {
+                        this.playSongElement.innerHTML = "Play &#9654;";
+                    }
                     this.patternScheduler.stop();
                 }.bind(this),
                 this.bpm,
