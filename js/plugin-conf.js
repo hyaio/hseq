@@ -1,5 +1,5 @@
 define(['require',
-    'github:pieroxy/lz-string@master/libs/lz-string-1.3.3-min',
+    'github:pieroxy/lz-string@release/libs/lz-string-1.3.3-min',
     './index.html!text',
     './style.css!text',
     '#google Exo 2:300 !font'
